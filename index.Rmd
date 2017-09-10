@@ -1,0 +1,20 @@
+---
+title: "Gotelli Lab Meeting Hacks"
+author: "Nick Gotelli"
+date: "September 10, 2017"
+output: 
+  html_document: 
+    highlight: tango
+    theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of us presents a brief, useful computational hack for some useful tool in statistics or graphics.
+
+Here are the links to each weekly hack:
+
+####11 September 2017 (Gotelli)
+[Using the `rbeta` and `rdirichlet` Functions to Simulate Count Data](NickGotelli/dirichlet.html)
