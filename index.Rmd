@@ -16,5 +16,5 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
-####11 September 2017 (Gotelli)
-[Using the `rbeta` and `rdirichlet` Functions to Simulate Count Data](NickGotelli/dirichlet.html)
+####18 September 2017 (Gotelli)
+[Power test for one-way ANOVA with artifical data](NickGotelli/PowerTestANOVA.html)

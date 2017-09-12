@@ -1,0 +1,81 @@
+---
+title: "Power Test For ANOVA"
+author: "Nick Gotelli"
+date: "September 12, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+It is a smart idea to evaluate the power of your experimental design *before* you begin your study. There is no point in running an experiment if the sample size is so small you have no chance of detecting a reasonable effect size.
+
+The analysis will work with a one-way ANOVA, illustrated with three treatments. The user provides the number of groups, the sample size, mean, and variance for each treatment group, as well as the number of random data sets to create. 
+
+## Initialize and provide input parameters
+```{r}
+set.seed <- 57   #for repeatable results
+library(ggplot2)
+
+GroupN <- 3      # number of treatment groups
+RanN <- 1000     # number of random data sets to create
+
+MeanA <- 100 # mean of treatment group A
+sdA <- 20    # standard deviation of treatment group A
+RepA <- 15   # number of replicates of treatment group A
+
+MeanB <- 100
+sdB <- 20
+RepB <- 15
+
+MeanC <- 130
+sdC <- 20
+RepC <- 15
+
+ParamList <- list(GroupN=GroupN,RanN=RanN,
+                  MeanA=MeanA,sdA=sdA,RepA=RepA,
+                  MeanB=MeanB,sdB=sdB,RepB=RepB,
+                  MeanC=MeanC,sdC=sdC,RepC=RepC)
+
+```
+
+## Create data frame
+```{r}
+##################################################
+# function: DataGen
+# create a single data frame
+# input: parameter list 
+# output: 2-column dataframe, with factor Treatment and response
+#------------------------------------------------- 
+DataGen <- function(ParamList) {
+Trt1 <- rnorm(n=RepA,mean=MeanA,sd=sdA)
+Trt2 <- rnorm(n=RepB,mean=MeanB,sd=sdB)
+Trt3 <- rnorm(n=RepC,mean=MeanC,sd=sdC)
+Trt <- c(rep("A",RepA),rep("B",RepB),rep("C",RepC))
+x <- data.frame(Trt,Response=c(Trt1,Trt2,Trt3))
+return(x)
+
+}
+##################################################
+DataGen()
+
+```
+
+## Graph output
+
+```{r}
+##################################################
+# function: AnovaPlot
+# Creates box plots with data overlays for ANOVA data
+# input: 2-column long-form data frame with 1-way layout
+# output: ggplot graph
+#------------------------------------------------- 
+AnovaPlot <- function(x) {
+
+
+return("testing.............functionname")
+}
+##################################################
+
+```
