@@ -18,3 +18,5 @@ Here are the links to each weekly hack:
 
 ####18 September 2017 (Gotelli)
 [Power test for one-way ANOVA with artifical data](NickGotelli/PowerTestANOVA.html)
+
+[PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
