@@ -1,23 +1,7 @@
----
-title: "Power Test For ANOVA"
-author: "Nick Gotelli"
-date: "September 12, 2017"
-output: html_document
----
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
-```
 
-It is a smart idea to evaluate the power of your experimental design *before* you begin your study. There is no point in running an experiment if the sample size is so small you have no chance of detecting a reasonable effect size.
-
-The analysis will work with a one-way ANOVA, illustrated with three treatments. The user provides the number of groups, the sample size, mean, and variance for each treatment group, as well as the number of random data sets to create. 
-
-## Initialize and provide input parameters
-
-Groups are defined by sample size, mean and sd from a normal distribution, but this could easily be adapted to use `rgamma` in the `DataGen` function for more realistic continuous distributions. Note that all parameters are bundled into a single paramater list. Tinker with the program by making changes only to variables in this location.
-
-```{r}
+## ------------------------------------------------------------------------
 # set.seed <- 57   #for repeatable results
 library(ggplot2)
 
@@ -40,12 +24,8 @@ ParamList <- list(RanN=RanN,
                   MeanB=MeanB,sdB=sdB,RepB=RepB,
                   MeanC=MeanC,sdC=sdC,RepC=RepC)
 
-```
 
-## Create data frame
-
-This function makes calls to the random number generator and also creates a factor for data labels in a long-format data frame.
-```{r}
+## ------------------------------------------------------------------------
 ##################################################
 # function: DataGen
 # create a single data frame
@@ -63,11 +43,8 @@ return(z)
 }
 ##################################################
 
-```
-## Calculate *p*-value
-This function burrows into the `aov` model results to pull out just the p value. This will have to be altered if you are doing regression or a glm.
 
-```{r}
+## ------------------------------------------------------------------------
 
 ##################################################
 # function: GetP
@@ -80,11 +57,8 @@ myModel <- aov(z$Response~z$Trt)
 pVal <- summary(myModel)[[1]][1,5]
 return(pVal)
 }
-```
-## Graph output
-Uses ggplot default, which is `theme_grey`, but have boosted the base size to 20 for larger labels. Colors in this plot are kept at default settings. The violin plot is used, raw data points are overlaid (fine for modest sample sizes), and a white point indicates the group mean. The number printed is the p-value for this one-way ANOVA.
 
-```{r}
+## ------------------------------------------------------------------------
 ##################################################
 # function: AnovaPlot
 # Creates box plots with data overlays for ANOVA data
@@ -103,12 +77,8 @@ Fig1 + geom_violin() +
    annotate("text",label=p,parse=TRUE,x=Inf,y=Inf, hjust=2.1,vjust=3.5)
 }
 ##################################################
-```
 
-## Run replicate simulations and store p-values
-This function replicates a daisy-chained expression to create the data, get the p value (without plotting anything), and then saving it to a vector `pVec`, which is returned. The parameter list is used to get the value for the number of replications.
-
-```{r}
+## ------------------------------------------------------------------------
 
 ##################################################
 # function: SimGen
@@ -121,13 +91,8 @@ pVec <- replicate(n=ParamList$RanN,expr=GetP(DataGen(ParamList)))
 
 return(pVec)
 }
-```
 
-## Create summary histogram of P values and power
-
-This function takes as input the vector of p values created in the simulation. It plots the histogram, with two colors for significant versus non-significant values. It also calculates and prints the power, the fraction of simulated p-values less than 0.05.
-
-```{r}
+## ------------------------------------------------------------------------
 
 ##################################################
 # function: PowerTester
@@ -154,5 +119,4 @@ Fig1 + geom_histogram(bins=40,col=I("black")) +
 
 AnovaPlot(DataGen(ParamList))  # run a single data set and display data
 PowerTester(SimGen(ParamList)) # run the power test with replication
-```
 
