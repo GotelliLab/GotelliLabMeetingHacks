@@ -58,7 +58,6 @@ return(x)
 
 }
 ##################################################
-DataGen()
 
 ```
 
@@ -71,11 +70,27 @@ DataGen()
 # input: 2-column long-form data frame with 1-way layout
 # output: ggplot graph
 #------------------------------------------------- 
-AnovaPlot <- function(x) {
+AnovaPlot <- function(z) {
+  # pull out p value from model summary
+  pVal <- unlist(summary(aov(z$Response~z$Trt)))["Pr(>F)1"]
+  # create an expression to add to the graph
+eqn <- as.character(as.expression(
+       substitute(italic(p) == pCon,
+                  list(pCon= round(pVal,digits=3)))))
+print(eqn)
+  
+  
+AnovaFig <- ggplot(data=z, aes(x=Trt,y=Response,fill=Trt))
+AnovaFig +  
+  geom_violin() +
+  geom_point() + 
+  theme_gray(base_size = 20) +
+  xlab("Treatment") +
+  stat_summary(fun.y=mean,geom="point",fill="white",shape=23,size=2.5) +
+  annotate("text",label=eqn,parse=TRUE,x=-Inf,y=Inf,hjust=-0.5,vjust=1.5)
 
-
-return("testing.............functionname")
 }
+AnovaPlot(DataGen(ParameterList))
 ##################################################
 
 ```
