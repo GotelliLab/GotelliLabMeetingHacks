@@ -94,3 +94,20 @@ AnovaPlot(DataGen(ParameterList))
 ##################################################
 
 ```
+
+
+```{r}
+##################################################
+# function: SimEngine
+# Simulates multiple runs of DataGen and retains p value from each
+# input: ParamList, which contains the number of simulations RanN
+# output: Vector of p values
+#------------------------------------------------- 
+SimEngine <- function(z) {
+
+pVec <- replicate(n=z$RanN,expr=DataGen(z)  
+pVal <- unlist(summary(aov(z$Response~z$Trt)))["Pr(>F)1"]
+
+return("testing.............functionname")
+}
+##################################################
