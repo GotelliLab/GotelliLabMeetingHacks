@@ -14,28 +14,26 @@ It is a smart idea to evaluate the power of your experimental design *before* yo
 The analysis will work with a one-way ANOVA, illustrated with three treatments. The user provides the number of groups, the sample size, mean, and variance for each treatment group, as well as the number of random data sets to create. 
 
 ## Initialize and provide input parameters
-
-Groups are defined by sample size, mean and sd from a normal distribution, but this could easily be adapted to use `rgamma` in the `DataGen` function for more realistic continuous distributions. Note that all parameters are bundled into a single paramater list. Tinker with the program by making changes only to variables in this location.
-
 ```{r}
-# set.seed <- 57   #for repeatable results
+set.seed <- 57   #for repeatable results
 library(ggplot2)
 
+GroupN <- 3      # number of treatment groups
 RanN <- 1000     # number of random data sets to create
 
 MeanA <- 100 # mean of treatment group A
-sdA <- 15    # standard deviation of treatment group A
+sdA <- 20    # standard deviation of treatment group A
 RepA <- 15   # number of replicates of treatment group A
 
 MeanB <- 100
-sdB <- 15
+sdB <- 20
 RepB <- 15
 
-MeanC <- 100
-sdC <- 15
+MeanC <- 130
+sdC <- 20
 RepC <- 15
 
-ParamList <- list(RanN=RanN,
+ParamList <- list(GroupN=GroupN,RanN=RanN,
                   MeanA=MeanA,sdA=sdA,RepA=RepA,
                   MeanB=MeanB,sdB=sdB,RepB=RepB,
                   MeanC=MeanC,sdC=sdC,RepC=RepC)
@@ -43,8 +41,6 @@ ParamList <- list(RanN=RanN,
 ```
 
 ## Create data frame
-
-This function makes calls to the random number generator and also creates a factor for data labels in a long-format data frame.
 ```{r}
 ##################################################
 # function: DataGen
@@ -57,32 +53,16 @@ Trt1 <- rnorm(n=RepA,mean=MeanA,sd=sdA)
 Trt2 <- rnorm(n=RepB,mean=MeanB,sd=sdB)
 Trt3 <- rnorm(n=RepC,mean=MeanC,sd=sdC)
 Trt <- c(rep("A",RepA),rep("B",RepB),rep("C",RepC))
-z <- data.frame(Trt,Response=c(Trt1,Trt2,Trt3))
-return(z)
+x <- data.frame(Trt,Response=c(Trt1,Trt2,Trt3))
+return(x)
 
 }
 ##################################################
+DataGen()
 
 ```
-## Calculate *p*-value
-This function burrows into the `aov` model results to pull out just the p value. This will have to be altered if you are doing regression or a glm.
 
-```{r}
-
-##################################################
-# function: GetP
-# Extract p-value from one-way ANOVA
-# input: one-way ANOVA data frame 
-# output: p-value from parametric test of group mean differences
-#------------------------------------------------- 
-GetP <- function(z) {
-myModel <- aov(z$Response~z$Trt)  
-pVal <- summary(myModel)[[1]][1,5]
-return(pVal)
-}
-```
 ## Graph output
-Uses ggplot default, which is `theme_grey`, but have boosted the base size to 20 for larger labels. Colors in this plot are kept at default settings. The violin plot is used, raw data points are overlaid (fine for modest sample sizes), and a white point indicates the group mean. The number printed is the p-value for this one-way ANOVA.
 
 ```{r}
 ##################################################
@@ -92,67 +72,10 @@ Uses ggplot default, which is `theme_grey`, but have boosted the base size to 20
 # output: ggplot graph
 #------------------------------------------------- 
 AnovaPlot <- function(x) {
-  
- p <- format(GetP(x),digits=3)
-Fig1 <- ggplot(data=x,aes(x=Trt,y=Response,fill=Trt)) + 
-  xlab("Treatment") +
-    theme_gray(base_size=20)
-Fig1 + geom_violin() + 
-  geom_point() +
-  stat_summary(fun.y=mean, geom="point",fill="white",shape=21,size=2.5) +
-   annotate("text",label=p,parse=TRUE,x=Inf,y=Inf, hjust=2.1,vjust=3.5)
+
+
+return("testing.............functionname")
 }
 ##################################################
+
 ```
-
-## Run replicate simulations and store p-values
-This function replicates a daisy-chained expression to create the data, get the p value (without plotting anything), and then saving it to a vector `pVec`, which is returned. The parameter list is used to get the value for the number of replications.
-
-```{r}
-
-##################################################
-# function: SimGen
-# Simulate multiple runs of data generator and extract ANOVA pvalue for each data set
-# input: parameter list 
-# output: vector of p values
-#------------------------------------------------- 
-SimGen <- function(ParamList) {
-pVec <- replicate(n=ParamList$RanN,expr=GetP(DataGen(ParamList)))
-
-return(pVec)
-}
-```
-
-## Create summary histogram of P values and power
-
-This function takes as input the vector of p values created in the simulation. It plots the histogram, with two colors for significant versus non-significant values. It also calculates and prints the power, the fraction of simulated p-values less than 0.05.
-
-```{r}
-
-##################################################
-# function: PowerTester
-# calculates one-way ANOVA power for random data sets with user-defined parameters
-# input: pVec, a vector of p-values from simulated data sets
-# output: a histogram of p values plus the power (= proportion of replicates <= 0.05)
-
-#------------------------------------------------- 
-PowerTester <- function(v) {
- Power <- format(mean(v<=0.05),digits=3)
- CutLevels <- ifelse(v<=0.05,"Sig","Non-Sig")
- PData <- data.frame(obs=1:length(v),Pvalue=v,CutLevels)
- Fig1 <- ggplot(data=PData,aes(x=Pvalue,fill=CutLevels)) +
-    theme_gray(base_size=20)
-Fig1 + geom_histogram(bins=40,col=I("black")) +
-                      scale_fill_manual(values=c("goldenrod","brown")) + 
-                      labs(x = "P-value", y = "Frequency") + xlim(0,1) +
-  annotate("text",label=Power,parse=TRUE,x=Inf,y=Inf, hjust=2.1,vjust=3.5)
-
-
-}
-
-# Typical use of code to see a sample plot and then run a replicated analysis
-
-AnovaPlot(DataGen(ParamList))  # run a single data set and display data
-PowerTester(SimGen(ParamList)) # run the power test with replication
-```
-
