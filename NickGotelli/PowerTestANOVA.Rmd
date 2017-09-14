@@ -19,7 +19,7 @@ set.seed <- 57   #for repeatable results
 library(ggplot2)
 
 GroupN <- 3      # number of treatment groups
-RanN <- 1000     # number of random data sets to create
+RanN <- 7     # number of random data sets to create
 
 MeanA <- 100 # mean of treatment group A
 sdA <- 20    # standard deviation of treatment group A
@@ -88,10 +88,12 @@ return(pVal)
 AnovaPlot <- function(z) {
   # pull out p value from model summary
   pVal <- getP(z)
+  print(head(z))
+  print(pVal)
   # create an expression to add to the graph
 eqn <- as.character(as.expression(
        substitute(italic(p) == pCon,
-                  list(pCon= round(pVal,digits=3)))))
+                  list(pCon= format(pVal,digits=3)))))
 print(eqn)
   
   
@@ -105,7 +107,7 @@ AnovaFig +
   annotate("text",label=eqn,parse=TRUE,x=-Inf,y=Inf,hjust=-0.5,vjust=1.5)
 
 }
-AnovaPlot(DataGen(ParameterList))
+AnovaPlot(DataGen(ParamList))
 ##################################################
 
 ```
@@ -120,9 +122,12 @@ AnovaPlot(DataGen(ParameterList))
 #------------------------------------------------- 
 SimEngine <- function(z) {
 
-# pVec <- replicate(n=z$RanN,expr=DataGen(z)  
-# pVal <- unlist(summary(aov(z$Response~z$Trt)))["Pr(>F)1"]
+pVec <- replicate(n=z$RanN,expr=getP(DataGen(z)))  
 
-return("testing.............functionname")
+return(pVec)
 }
 ##################################################
+SimEngine(ParamList)
+```
+
+
