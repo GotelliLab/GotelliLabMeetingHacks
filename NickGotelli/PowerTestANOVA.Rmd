@@ -60,6 +60,21 @@ return(x)
 ##################################################
 
 ```
+## Calculate p-value for ANOVA
+
+```{r}
+##################################################
+# function: getP
+# extract p-value from ANOVA
+# input: data frame
+# output: p-value for ANOVA
+#------------------------------------------------- 
+getP <- function(dframe) {
+pVal <- unlist(summary(aov(dframe$Response~dframe$Trt)))["Pr(>F)1"]
+return(pVal)
+}
+##################################################
+```
 
 ## Graph output
 
@@ -72,7 +87,7 @@ return(x)
 #------------------------------------------------- 
 AnovaPlot <- function(z) {
   # pull out p value from model summary
-  pVal <- unlist(summary(aov(z$Response~z$Trt)))["Pr(>F)1"]
+  pVal <- getP(z)
   # create an expression to add to the graph
 eqn <- as.character(as.expression(
        substitute(italic(p) == pCon,
@@ -105,8 +120,8 @@ AnovaPlot(DataGen(ParameterList))
 #------------------------------------------------- 
 SimEngine <- function(z) {
 
-pVec <- replicate(n=z$RanN,expr=DataGen(z)  
-pVal <- unlist(summary(aov(z$Response~z$Trt)))["Pr(>F)1"]
+# pVec <- replicate(n=z$RanN,expr=DataGen(z)  
+# pVal <- unlist(summary(aov(z$Response~z$Trt)))["Pr(>F)1"]
 
 return("testing.............functionname")
 }
