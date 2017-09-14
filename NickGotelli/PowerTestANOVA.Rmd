@@ -15,11 +15,10 @@ The analysis will work with a one-way ANOVA, illustrated with three treatments. 
 
 ## Initialize and provide input parameters
 ```{r}
-set.seed <- 57   #for repeatable results
+# set.seed <- 57   # for repeatable results
 library(ggplot2)
 
-GroupN <- 3      # number of treatment groups
-RanN <- 7     # number of random data sets to create
+RanN <- 1000     # number of random data sets to create
 
 MeanA <- 100 # mean of treatment group A
 sdA <- 20    # standard deviation of treatment group A
@@ -29,11 +28,11 @@ MeanB <- 100
 sdB <- 20
 RepB <- 15
 
-MeanC <- 130
+MeanC <- 100
 sdC <- 20
 RepC <- 15
 
-ParamList <- list(GroupN=GroupN,RanN=RanN,
+ParamList <- list(RanN=RanN,
                   MeanA=MeanA,sdA=sdA,RepA=RepA,
                   MeanB=MeanB,sdB=sdB,RepB=RepB,
                   MeanC=MeanC,sdC=sdC,RepC=RepC)
@@ -88,13 +87,10 @@ return(pVal)
 AnovaPlot <- function(z) {
   # pull out p value from model summary
   pVal <- getP(z)
-  print(head(z))
-  print(pVal)
   # create an expression to add to the graph
 eqn <- as.character(as.expression(
        substitute(italic(p) == pCon,
                   list(pCon= format(pVal,digits=3)))))
-print(eqn)
   
   
 AnovaFig <- ggplot(data=z, aes(x=Trt,y=Response,fill=Trt))
@@ -107,7 +103,6 @@ AnovaFig +
   annotate("text",label=eqn,parse=TRUE,x=-Inf,y=Inf,hjust=-0.5,vjust=1.5)
 
 }
-AnovaPlot(DataGen(ParamList))
 ##################################################
 
 ```
@@ -127,7 +122,46 @@ pVec <- replicate(n=z$RanN,expr=getP(DataGen(z)))
 return(pVec)
 }
 ##################################################
-SimEngine(ParamList)
 ```
 
+# Plot results of power test
+```{r}
+
+##################################################
+# function: PowerHistogram
+# Plots distribution of p values from simulated data
+# input: vector of p values
+# output: two-color histogram and calculation of overall power
+#------------------------------------------------- 
+PowerHistogram <- function(v) {
+
+# create data frame including color split at p <= 0.05
+  sigP <- ifelse(v<=0.05,"Sig","NonSig")
+  plotData <- data.frame(pVal=v,sig=sigP)
+  
+  # pull out p value from model summary
+  Powerx <- mean(plotData$pVal<=0.05)
+    # create an expression to add to the graph
+eqn <- as.character(as.expression(
+       substitute(Power == Powerx,
+                  list(Powerx = format(Powerx,digits=3)))))
+  
+  PowerPlot <- ggplot(data=plotData,aes(x=pVal,fill=sig))
+  PowerPlot + geom_histogram(bins=40,color="black") +
+  theme_gray(base_size=20) + 
+  xlab("P value") +
+  scale_fill_manual(values=c("goldenrod","brown")) +
+  xlim(0,1) +
+  annotate("text",label=eqn,parse=TRUE,x=Inf,y=Inf,hjust=1.5,vjust=1.5) +
+  guides(fill=FALSE)
+  
+}
+##################################################
+```
+
+## Typical Use of Functions
+```{r, warning=FALSE}
+AnovaPlot(DataGen(ParamList))        # Depict sample data set
+PowerHistogram(SimEngine(ParamList)) # Replicate model, conduct power test, plot results
+```
 
