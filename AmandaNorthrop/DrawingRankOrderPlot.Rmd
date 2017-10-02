@@ -1,0 +1,102 @@
+---
+title: "Rank Order Plot"
+author: "Amanda Northrop"
+date: "10/2/2017"
+output: html_document
+---
+
+This chunk of code will draw a rank order plot for a list of pathways identified in 
+two treatments with lines connecting like pathways and colored lines connecting significantly different
+pathways. The plot is drawn on an empty plotting window. 
+
+
+```{r}
+#set the output figure window size
+knitr::opts_chunk$set(fig.width=9, fig.height=8)
+```
+
+
+```{r}
+
+
+#set up the data frame (this would normally be done via reading in a file but for hack purposes I've simply
+#made a single column data frame)
+control_ordered<-data.frame(stringsAsFactors = FALSE,Pathway=c("-Pyrimidine metabolism","-Purine metabolism",
+                                      "-Citrate cycle TCA cycle ", "-Glyoxylate and dicarboxylate metabolism",
+                                      "-Cysteine and methionine metabolism", "-Pyruvate metabolism",
+                                      "-Carbon fixation pathways in prokaryotes", "-Carbon fixation in photosynthetic organisms",
+                                      "-Pentose phosphate pathway", "-Novobiocin biosynthesis",
+                                      "-Valine leucine and isoleucine degradation", "-Glycolysis & Gluconeogenesis" ,
+                                      "-Phenylalanine tyrosine and tryptophan biosynthesis", "-Methane metabolism" ,
+                                      "-Fatty acid degradation", "-Propanoate metabolism" ,
+                                      "-Arginine and proline metabolism","-Butanoate metabolism",
+                                      "-Limonene and pinene degradation", "-Lysine degradation" , 
+                                      "-not present"))                                       
+
+enriched_ordered<-data.frame(stringsAsFactors = FALSE,Pathway=c("-Pyrimidine metabolism", "-Glyoxylate and dicarboxylate metabolism",
+                                       "-Purine metabolism","-Arginine and proline metabolism","-Carbon fixation pathways in prokaryotes",
+                                       "-Glutathione metabolism", "-Butanoate metabolism","-Alanine aspartate and glutamate metabolism",
+                                       "-Pyruvate metabolism","-Glycolysis & Gluconeogenesis","-beta Alanine metabolism", 
+                                       "-C5 Branched dibasic acid metabolism","-Citrate cycle TCA cycle ", "-Toluene degradation",
+                                       "-Methane metabolism","-Nitrogen metabolism","-Propanoate metabolism","-Tryptophan metabolism",
+                                       "-Cysteine and methionine metabolism", "-Fatty acid degradation", "-not present")) 
+
+
+########################################################################################
+#Create a rank order plot with colored lines connecting significantly different pathways
+########################################################################################
+
+
+ylabinc<-seq(48,3,-2.15) #make sequence of numbers that will be y coordinates of pathway text
+
+
+par(usr=c(0,51.96,0,51.96)) #set the extremes of the coordiantes of the plotting region
+par(mar=c(0,15,1,15)) #Set number of lines of margin on each side of the plot
+plot(0:52,0:52,axes = FALSE,type="n",ylab=NULL,ann=FALSE) #plot an empty figure
+for (i in 1:length(control_ordered$Pathway)){  #for each control pathway write the pathway text 
+  par(usr=c(0,51.96,0,51.96))
+  text(par("usr")[1]-50, ylabinc[i],srt=0, adj = 0, labels = control_ordered$Pathway[i], xpd=TRUE,cex=.8)
+}
+for (i in 1:length(enriched_ordered$Pathway)){ #for each enriched pathway write the pathway text
+  par(usr=c(0,51.96,0,51.96))
+  text(par("usr")[2], ylabinc[i],srt=0, adj = 0, labels = enriched_ordered$Pathway[i], xpd=TRUE,cex=.8)
+}
+
+text(par("usr")[1]-45,52,srt=0,adj=0,labels="Control",xpd=TRUE,cex=1,font=2) #Add control label
+text(par("usr")[2]+5,52,srt=0,adj=0,labels="Enriched",xpd=TRUE,cex=1,font=2) #Add enriched label
+
+
+#set up a for loop that goes through each control pathway and finds the rank index of the matching enriched pathway
+#If there's no match, the index is 21 (not present). If there is no match or if slope of the line connecting the matches
+#is less than -.3 then draw a colored line between the matches or between the control pathway and "not present."
+#Do the same for the enriched pathways. 
+for(i in 1:(length(control_ordered$Pathway)-1)){
+  ind<-which(enriched_ordered$Pathway==control_ordered$Pathway[i]) #for each control pathway,
+  #find the rank of the matching pathway in the list of enriched pathways
+  if (length(ind)==0){ #if the enriched pathway isn't found in the top 20
+    ind<-21 #set the index to 21 (not present)
+  }
+  par(usr=c(0,51.96,0,51.96))
+  if ((ylabinc[i]-ylabinc[ind])/(par("usr")[1]-par("usr")[2]-5)< -0.3 || ind==21){ #if the slope of the line that
+    #would connect matching pathways is less than -0.3 or the pathway isn't in the enriched list
+    lines(x=c(par("usr")[1],par("usr")[2]-5),y=c(ylabinc[i],ylabinc[ind]),col="turquoise4") #connect with a blue line
+  } else { 
+    lines(x=c(par("usr")[1],par("usr")[2]-5),y=c(ylabinc[i],ylabinc[ind]),col="black") #otherwise connect with black line
+  }
+}
+
+for(i in 1:(length(enriched_ordered$Pathway)-1)){ #repeat for the enriched pathway list
+  ind<-which(control_ordered$Pathway==enriched_ordered$Pathway[i])
+  if (length(ind)==0){
+    ind<-21
+  }
+  par(usr=c(0,51.96,0,51.96))
+  if ((ylabinc[i]-ylabinc[ind])/(par("usr")[2]-par("usr")[1]-5)> 0.3 || ind==21){
+    lines(x=c(par("usr")[2]-5,par("usr")[1]),y=c(ylabinc[i],ylabinc[ind]),col="chocolate")
+  } else if (ind==21){
+    lines(x=c(par("usr")[2]-5,par("usr")[1]),y=c(ylabinc[i],ylabinc[ind]),col="black")
+  }
+}
+
+```
+
