@@ -16,7 +16,12 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####3 October 2017 (Northrop)
+[Drawing a rank order plot in base R](AmandaNorthrop/DrawingRankOrderPlot.html)
+[DrawingRankOrderPlot.R](AmandaNorthrop/DrawingRankOrderPlot.R)
+
 ####18 September 2017 (Gotelli)
 [Power test for one-way ANOVA with artificial data](NickGotelli/PowerTestANOVA.html)
 
 [PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
+
