@@ -1,0 +1,342 @@
+---
+title: "Color Palettes"
+author: "Nick Gotelli"
+date: "October 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is a collection of several blogs and postings with useful color palettes to use in R graphing.
+
+## `colorRampPaletteAlpha()` and `addalpha()` – helper functions for adding transparency to colors in R
+
+### blog post by Myles Harrison
+
+#### Functions for adding alpha transparency to colors and palettes
+
+```{r}
+# addalpha()
+addalpha <- function(colors, alpha=1.0) {
+  r <- col2rgb(colors, alpha=T)
+  # Apply alpha
+  r[4,] <- alpha*255
+  r <- r/255.0
+  return(rgb(r[1,], r[2,], r[3,], r[4,]))
+}
+
+# colorRampPaletteAlpha()
+colorRampPaletteAlpha <- function(colors, n=32, interpolate='linear') {
+  # Create the color ramp normally
+  cr <- colorRampPalette(colors, interpolate=interpolate)(n)
+  # Find the alpha channel
+  a <- col2rgb(colors, alpha=T)[4,]
+  # Interpolate
+if (interpolate=='linear') {
+l <- approx(a, n=n)
+} else {
+l <- spline(a, n=n)
+}
+l$y[l$y > 255] <- 255 # Clamp if spline is > 255
+cr <- addalpha(cr, l$y/255.0)
+return(cr)
+}
+```
+`colorRampPalette` is a very useful function in R for creating colors vectors to use as the palette, or to pass as an argument to a plotting function; however, a weakness lies in that it disregards the alpha channel of the colors passed to it when creating the new vector.
+
+I have also found that working with the alpha channel in R is not always the easiest, but is something that scientists and analysts may often have to do - when overplotting, for example.
+
+To address this I've quickly written the helper functions `addalpha` and `colorRampPaletteAlpha`, the former which makes passing a scalar or vector to a vector of colors as the alpha channel easier, and the latter as a wrapper for colorRampPalette which preserves the alpha channel of the colors provided.
+
+Using the two functions in combination it is easy to produce plots with variable transparency such as in the figure below:
+
+```{r}
+# addalpha() and colorRampPaletteAlpha() usage examples
+# Myles Harrison
+# www.everydayanalytics.ca
+
+library(MASS)
+library(RColorBrewer)
+# Source the colorRampAlpha file
+#source ('colorRampPaletteAlpha.R')
+
+# addalpha()
+# ----------
+# scalars:
+col1 <- "red"
+col2 <- rgb(1,0,0)
+addalpha(col2, 0.8)
+addalpha(col2,0.8)
+
+# scalar alpha with vector of colors:
+col3 <- c("red", "green", "blue", "yellow")
+addalpha(col3, 0.8)
+plot(rnorm(1000), col=addalpha(brewer.pal(11,'RdYlGn'), 0.5), pch=16)
+
+# alpha and colors vector:
+alpha <- seq.int(0, 1, length.out=4)
+addalpha(col3, alpha)
+
+# Simple example
+x <- seq.int(0, 2*pi, length=1000)
+y <- sin(x)
+plot(x, y, col=addalpha(rep("red", 1000), abs(sin(y))))
+
+# with RColorBrewer
+x <- seq.int(0, 1, length.out=100)
+z <- outer(x,x)
+c1 <- colorRampPalette(brewer.pal(11, 'Spectral'))(100)
+c2 <- addalpha(c1,x)
+par(mfrow=c(1,2))
+image(x,x,z,col=c1)
+image(x,x,z,col=c2)
+
+# colorRampPaletteAlpha()
+# Create normally distributed data
+x <- rnorm(1000)
+y <- rnorm(1000)
+k <- kde2d(x,y,n=250)
+
+# Sample colors with alpha channel
+col1 <- addalpha("red", 0.5)
+col2 <-"green"
+col3 <-addalpha("blue", 0.2)
+cols <- c(col1,col2,col3)
+
+# colorRampPalette ditches the alpha channel
+# colorRampPaletteAlpha does not
+cr1 <- colorRampPalette(cols)(32)
+cr2 <- colorRampPaletteAlpha(cols, 32)
+
+par(mfrow=c(1,2))
+plot(x, y, pch=16, cex=0.3)
+image(k$x,k$y,k$z,col=cr1, add=T)
+plot(x, y, pch=16, cex=0.3)
+image(k$x,k$y,k$z,col=cr2, add=T)
+
+# Linear vs. spline interpolation
+cr1 <- colorRampPaletteAlpha(cols, 32, interpolate='linear') # default
+cr2 <- colorRampPaletteAlpha(cols, 32, interpolate='spline')
+plot(x, y, pch=16, cex=0.3)
+image(k$x,k$y,k$z,col=cr1, add=T)
+plot(x, y, pch=16, cex=0.3)
+image(k$x,k$y,k$z,col=cr2, add=T)
+```
+
+## Default Color Mappings for `ggplot2()`
+
+Here is a function to derive the default color values that ggplot provides. That way they can be modified for subsets. Create a function to get the evenly spaced colors for whatever level is specified in a category for ggplot:
+
+```{r}
+gg_color_hue <- function(n) {
+  hues <- seq(15,375,length=n+1)
+  hcl(h=hues,l=65,c=100)[1:n]
+}
+```
+
+Now call it and plot it:
+
+```{r}
+n <- 2
+cols <- gg_color_hue(n)
+print(cols)
+plot(1:n, pch=16,col=cols,cex=5)
+```
+
+
+Note the following HCL color specification information:
+
+```
+Usage
+
+hcl(h = 0, c = 35, l = 85, alpha, fixup = TRUE)
+Arguments
+
+h	
+The hue of the color specified as an angle in the range [0,360]. 0 yields red, 120 yields green 240 yields blue, etc.
+
+c	
+The chroma of the color. The upper bound for chroma depends on hue and luminance.
+
+l	
+A value in the range [0,100] giving the luminance of the colour. For a given combination of hue and chroma, only a subset of this range is possible.
+
+alpha	
+numeric vector of values in the range [0,1] for alpha transparency channel (0 means transparent and 1 means opaque).
+
+fixup	
+a logical value which indicates whether the resulting RGB values should be corrected to ensure that a real color results. if fixup is FALSE RGB components lying outside the range [0,1] will result in an NA value.
+```
+
+## Good Color Palettes
+
+This is some material pasted from a blog [The Paul Tol 21-color salute](http://www.r-bloggers.com/the-paul-tol-21-color-salute/) with useful color palettes.
+
+You may or may not know that PerformanceAnalytics contains a number of specific color schemes designed for charting data in R (they aren’t documented well, but they show up in some of the chart examples). I’ve been collecting color palates for years in search of good combinations of attractiveness, relative weight, and distinctiveness, helped along the way by great sites like ColorBrewer and packages like RColorBrewer.   I’ve assembled palettes that work for specific purposes, such as the color-focus palates (e.g., redfocus is red plus a series of dark to light gray colors). Others, such as rich#equal, provide a palette for displaying data that all deserve equal treatment in the chart. Each of these palettes have been designed to create readable, comparable line and bar graphs with specific objectives outlined before each category below.
+
+I use this approach rather than generating schemes on the fly for two reasons: it creates fewer dependencies on libraries that don’t need to be called dynamically; and to guarantee the color used for the n-th column of data.
+
+```{r}
+# Function for plotting colors side-by-side
+# Written by Adam Zeileis in the color.space package
+pal <- function(col=c("goldenrod","mediumorchid","coral"), border = "light gray", ...){
+  n <- length(col)
+  plot(0, 0, type="n", xlim = c(0, 1), ylim = c(0, 1),
+       axes = FALSE, xlab = "", ylab = "", ...)
+  rect(0:(n-1)/n, 0, 1:n/n, 1, col = col, border = border)
+  }
+pal()
+```
+
+### Focus Palettes
+The Focus palettes are colorsets designed to provide focus to the data graphed as the first element. These palettes are best used when there is clearly an important data set for the viewer to focus on, with the remaining data being secondary, tertiary, etc. Later elements are shown in diminishing values of gray. These were generated with RColorBrewer, using the 8 level “grays” palette and replacing the darkest gray with the focus color.
+
+```{r}
+# FOCUS PALETTES
+# Red as highlight
+redfocus = c("#CB181D", "#252525", "#525252", "#737373", "#969696", "#BDBDBD", "#D9D9D9", "#F0F0F0")
+ 
+# Green as highlight
+greenfocus = c("#41AB5D", "#252525", "#525252", "#737373", "#969696", "#BDBDBD", "#D9D9D9", "#F0F0F0")
+ 
+# Blue as highlight
+bluefocus = c("#0033FF", "#252525", "#525252", "#737373", "#969696", "#BDBDBD", "#D9D9D9", "#F0F0F0")
+ 
+pal(greenfocus)
+```
+
+### Equal Weights Palettes
+Equal Weight palettes colorsets are fine for when all of the data should be distinguishable and carry similar weight, such as on a line graph or bar plot. The different numbers in the name indicate the number of colors generated (six colors is probably the maximum for a completely readable linegraph).
+
+```{r}
+# EQUAL WEIGHT
+# Generated with rainbow(12, s = 0.6, v = 0.75)
+rainbow12equal = c("#BF4D4D", "#BF864D", "#BFBF4D", "#86BF4D", "#4DBF4D", "#4DBF86", "#4DBFBF", "#4D86BF", "#4D4DBF", "#864DBF", "#BF4DBF", "#BF4D86")
+rainbow10equal = c("#BF4D4D", "#BF914D", "#A8BF4D", "#63BF4D", "#4DBF7A", "#4DBFBF", "#4D7ABF", "#634DBF", "#A84DBF", "#BF4D91")
+rainbow8equal = c("#BF4D4D", "#BFA34D", "#86BF4D", "#4DBF69", "#4DBFBF", "#4D69BF", "#864DBF", "#BF4DA3")
+rainbow6equal = c("#BF4D4D", "#BFBF4D", "#4DBF4D", "#4DBFBF", "#4D4DBF", "#BF4DBF")
+ 
+# Generated with package "gplots" function rich.colors(12)
+rich12equal = c("#000040", "#000093", "#0020E9", "#0076FF", "#00B8C2", "#04E466", "#49FB25", "#E7FD09", "#FEEA02", "#FFC200", "#FF8500", "#FF3300")
+rich10equal = c("#000041", "#0000A9", "#0049FF", "#00A4DE", "#03E070", "#5DFC21", "#F6F905", "#FFD701", "#FF9500", "#FF3300")
+rich8equal = c("#000041", "#0000CB", "#0081FF", "#02DA81", "#80FE1A", "#FDEE02", "#FFAB00", "#FF3300")
+rich6equal = c("#000043", "#0033FF", "#01CCA4", "#BAFF12", "#FFCC00", "#FF3300")
+ 
+# Generated with package "fields" function tim.colors(12), which is said to emulate the default matlab colorset
+tim12equal = c("#00008F", "#0000EA", "#0047FF", "#00A2FF", "#00FEFF", "#5AFFA5", "#B5FF4A", "#FFED00", "#FF9200", "#FF3700", "#DB0000", "#800000")
+tim10equal = c("#00008F", "#0000FF", "#0070FF", "#00DFFF", "#50FFAF", "#BFFF40", "#FFCF00", "#FF6000", "#EF0000", "#800000")
+tim8equal = c("#00008F", "#0020FF", "#00AFFF", "#40FFBF", "#CFFF30", "#FF9F00", "#FF1000", "#800000")
+tim6equal = c("#00008F", "#005AFF", "#23FFDC", "#ECFF13", "#FF4A00", "#800000")
+ 
+# Generated with sort(brewer.pal(8,"Dark2")) #Dark2, Set2
+dark8equal = c("#1B9E77", "#666666", "#66A61E", "#7570B3", "#A6761D", "#D95F02", "#E6AB02", "#E7298A")
+dark6equal = c("#1B9E77", "#66A61E", "#7570B3", "#D95F02", "#E6AB02", "#E7298A")
+set8equal = c("#66C2A5", "#8DA0CB", "#A6D854", "#B3B3B3", "#E5C494", "#E78AC3", "#FC8D62", "#FFD92F")
+set6equal = c("#66C2A5", "#8DA0CB", "#A6D854", "#E78AC3", "#FC8D62", "#FFD92F")
+ 
+pal(rich8equal)
+pal(tim12equal)
+pal(dark6equal)
+pal(set8equal)
+```
+### Monochrome Palettes
+The last category are Monochrome palettes, which I like in both stacked bar plots and with a few lines.
+
+```{r}
+# MONOCHROME PALETTES
+# sort(brewer.pal(8,"Greens"))
+redmono = c("#99000D", "#CB181D", "#EF3B2C", "#FB6A4A", "#FC9272", "#FCBBA1", "#FEE0D2", "#FFF5F0")
+greenmono = c("#005A32", "#238B45", "#41AB5D", "#74C476", "#A1D99B", "#C7E9C0", "#E5F5E0", "#F7FCF5")
+bluemono = c("#084594", "#2171B5", "#4292C6", "#6BAED6", "#9ECAE1", "#C6DBEF", "#DEEBF7", "#F7FBFF")
+grey8mono = c("#000000","#252525", "#525252", "#737373", "#969696", "#BDBDBD", "#D9D9D9", "#F0F0F0")
+grey6mono = c("#242424", "#494949", "#6D6D6D", "#929292", "#B6B6B6", "#DBDBDB")
+ 
+pal(bluemono)
+pal(redmono)
+```
+
+A while ago I decided that none of these schemes was quite discernable enough for what I needed to do. I frequently display line graphs that require the reader to differentiate among the colors, and sometimes I need more differentiable colors than is advisable. I did a bit of hunting around and came across [Paul Tol’s SRON Technical Note](http://www.sron.nl/~pault/colourschemes.pdf) and have since been using his color schemes for qualitative data, which are nicely distinctive and come with more combinations than many of the best ColorBrewer sets.
+
+```{r}
+# Qualitative color schemes by Paul Tol
+ tol1qualitative=c("#4477AA")
+ tol2qualitative=c("#4477AA", "#CC6677")
+ tol3qualitative=c("#4477AA", "#DDCC77", "#CC6677")
+ tol4qualitative=c("#4477AA", "#117733", "#DDCC77", "#CC6677")
+ tol5qualitative=c("#332288", "#88CCEE", "#117733", "#DDCC77", "#CC6677")
+ tol6qualitative=c("#332288", "#88CCEE", "#117733", "#DDCC77", "#CC6677","#AA4499")
+ tol7qualitative=c("#332288", "#88CCEE", "#44AA99", "#117733", "#DDCC77", "#CC6677","#AA4499")
+ tol8qualitative=c("#332288", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#CC6677","#AA4499")
+ tol9qualitative=c("#332288", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#CC6677", "#882255", "#AA4499")
+ tol10qualitative=c("#332288", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#661100", "#CC6677", "#882255", "#AA4499")
+ tol11qualitative=c("#332288", "#6699CC", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#661100", "#CC6677", "#882255", "#AA4499")
+ tol12qualitative=c("#332288", "#6699CC", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#661100", "#CC6677", "#AA4466", "#882255", "#AA4499")
+ 
+pal(tol7qualitative)
+```
+A recent update to Paul’s technical paper adds a new banded rainbow scheme, and several have a large number of steps. He notes that when you’re using them you’re better off picking a scheme that matches the number of colors needed, rather than using only a few colors from a larger scheme.
+
+```{r}
+tol14rainbow=c("#882E72", "#B178A6", "#D6C1DE", "#1965B0", "#5289C7", "#7BAFDE", "#4EB265", "#90C987", "#CAE0AB", "#F7EE55", "#F6C141", "#F1932D", "#E8601C", "#DC050C")
+tol15rainbow=c("#114477", "#4477AA", "#77AADD", "#117755", "#44AA88", "#99CCBB", "#777711", "#AAAA44", "#DDDD77", "#771111", "#AA4444", "#DD7777", "#771144", "#AA4477", "#DD77AA")
+tol18rainbow=c("#771155", "#AA4488", "#CC99BB", "#114477", "#4477AA", "#77AADD", "#117777", "#44AAAA", "#77CCCC", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788")
+# ...and finally, the Paul Tol 21-color salute
+tol21rainbow= c("#771155", "#AA4488", "#CC99BB", "#114477", "#4477AA", "#77AADD", "#117777", "#44AAAA", "#77CCCC", "#117744", "#44AA77", "#88CCAA", "#777711", "#AAAA44", "#DDDD77", "#774411", "#AA7744", "#DDAA77", "#771122", "#AA4455", "#DD7788")
+ 
+pal(tol21rainbow)
+```
+Ok, I admit that 21 colors is pushing it when it comes to discernability on the screen or page. But sometimes there are too many lines anyway and you need to try to show them all. So this is a nice set to pull from your back pocket before reverting to a continuous series.
+
+I’d be curious if you’ve found a color scheme you like – if so, add it to the comments…
+
+### Palette From Comments On Blog
+
+```{r}
+# Kevin Wright says
+mycols=c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00", "black",
+"gold1", "skyblue2", "#FB9A99", "palegreen2", "#CAB2D6", "#FDBF6F",
+"gray70", "khaki2", "maroon", "orchid1", "deeppink1", "blue1",
+"steelblue4", "darkturquoise", "green1", "yellow4", "yellow3",
+"darkorange4", "brown")
+
+ones <- rep(1, length=length(mycols))
+# Get hsv for labels
+names(ones) <- apply(round(rgb2hsv(col2rgb(c(mycols))),2), 2,
+function(x) {paste(x, collapse=", ")})
+pie(ones, col=mycols, cex=.75, main = "HSV VALUES")
+pal(mycols)
+```
+
+## `Canva Palettes` Graphic display
+
+Who could possibly resist peeking at the ~~150~~ 148 palettes from [canva.com](https://designschool.canva.com/)? Here is some simple code to do the trick.
+
+```{r}
+library(ggthemes)
+par(mfrow=c(3,3))
+
+z <- canva_palettes[-c(101,117)] # strip out bad values!!
+for (i in 1:length(z)){
+  pie(rep(1/length(z[[i]]),length(z[[i]])),col=z[[i]],
+      main=names(z[i]))
+}
+    
+```
+
+# `Wes Anderson` palettes
+
+Even cooler is this set of distinctive palettes from the Wes Anderson films
+
+```{r}
+library(wesanderson)
+z <- wes_palettes
+for (i in 1:length(z)){
+  pie(rep(1/length(z[[i]]),length(z[[i]])),col=z[[i]],
+      main=names(z[i]))
+}
+    
+```
+
+

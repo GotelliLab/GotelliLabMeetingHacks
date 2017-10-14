@@ -16,7 +16,12 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
-####3 October 2017 (Northrop)
+####17 October 2017 (Gotelli)
+[Lots of cool color palettes for plotting](NickGotelli/ColorPalettes.html)
+
+[ColorPalettes.R](NickGotelli/ColorPalettes.R)
+
+####2 October 2017 (Northrop)
 [Drawing a rank order plot in base R](AmandaNorthrop/DrawingRankOrderPlot.html)
 
 [DrawingRankOrderPlot.R](AmandaNorthrop/DrawingRankOrderPlot.R)
