@@ -16,6 +16,10 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####23 October 2017 (Pett)
+[Repeated Measures ANOVA](Pett_AVbyFgTime.html)   
+[Repeated Measure ANOVA Script](Pett_AVbyFgTime.R)   
+   
 ####17 October 2017 (Gotelli)
 [Lots of cool color palettes for plotting](NickGotelli/ColorPalettes.html)
 
@@ -30,4 +34,3 @@ Here are the links to each weekly hack:
 [Power test for one-way ANOVA with artificial data](NickGotelli/PowerTestANOVA.html)
 
 [PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
-
