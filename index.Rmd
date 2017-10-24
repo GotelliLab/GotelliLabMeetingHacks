@@ -17,8 +17,9 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 Here are the links to each weekly hack:
 
 ####23 October 2017 (Pett)
-[Repeated Measures ANOVA](Pett_AVbyFgTime.html)   
-[Repeated Measure ANOVA Script](Pett_AVbyFgTime.R)   
+[Repeated Measures ANOVA](LindseyPett/Pett_AVbyFgTime.html)    
+   
+[Repeated Measure ANOVA Script](LindseyPett/Pett_AVbyFgTime.R)   
    
 ####17 October 2017 (Gotelli)
 [Lots of cool color palettes for plotting](NickGotelli/ColorPalettes.html)
