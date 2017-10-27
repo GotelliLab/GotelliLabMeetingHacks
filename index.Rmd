@@ -16,6 +16,9 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####30 October 2017 (Lauren Ash)
+[Graveyard Script](LaurenAsh/Graveyard_Script_Updated.R)   
+     
 ####23 October 2017 (Pett)
 [Repeated Measures ANOVA](LindseyPett/Pett_AVbyFgTime.html)    
    
