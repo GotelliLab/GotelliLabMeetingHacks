@@ -1,0 +1,75 @@
+---
+title: "Survival package"
+author: "Lauren Ash"
+date: "10/30/2017"
+output:
+  html_document:
+    df_print: paged
+---
+```{r}
+library(survival)
+survival <-read.csv(file ="Graveyard_Survival.csv")
+attach(survival)
+survival$Death_Age <- as.numeric(Death_Year-Birth_Year)
+survival$Event<-as.logical(rep("TRUE",length(survival$Death_Age)))
+survival$Century<-as.factor(ifelse(survival$Birth_Year<1900,"19th","20th"))
+
+# Plotting survival curves by sex
+sfit2<-survfit(Surv(Death_Age, Event)~Sex, data=survival)
+summary(sfit2, times=seq(0,100,10))
+plot(sfit2) # pretty bad
+
+```
+
+```{r}
+#devtools::install_github("kassambara/survminer", build_vignettes = FALSE)
+#devtools::install_github("kassambara/ggpubr")
+library(ggpubr)
+library(survminer)
+
+# ggplot survival curves: not as curvy as how we calculated
+# ggsurvplot(sfit2)
+ggsurvplot(sfit2, conf.int=TRUE, pval=TRUE, risk.table=FALSE, legend.title="Sex",
+           legend.labs=c("Female", "Male"),
+           palette=c("orchid2","dodgerblue2"), 
+           main="Kaplan-Meier Curve for Survival between sexes")
+
+# Plotting survival curves by century
+sfit3<-survfit(Surv(Death_Age, Event)~Century, data=survival)
+summary(sfit3, times=seq(0,100,10))
+plot(sfit3) # pretty crappy
+ggsurvplot(sfit3, conf.int=TRUE, pval=TRUE, risk.table=FALSE, legend.title="Century",
+           legend.labs=c("19th Century", "20th Century"),
+           palette=c("darkslategrey","blue"), 
+           main="Kaplan-Meier Curve for Survival between centuries")
+
+sfit4<-survfit(Surv(Death_Age, Event)~Century+Sex, data=survival)
+ggsurvplot(sfit4)
+
+## Cox PH test: Cox regression (or proportional hazards regression) allows analyzing the effect of several risk factors on survival
+
+# Hazard Ratio (HR) is exp(coef)
+#HR=1: No effect
+#HR>1: Increase in hazard
+#HR<1: Reduction in hazard (protective)
+diff_Sex <- coxph(Surv(Death_Age, Event)~Sex, data=survival)
+diff_Sex
+## since exp(coef)>1, males have increase in hazard
+
+diff_Century <- coxph(Surv(Death_Age, Event)~Century, data=survival)
+diff_Century
+## since exp(coef)<1, 20th century have reduction in hazard (hazard = probablity of death)
+
+diff_Sex_Century <- coxph(Surv(Death_Age, Event)~Sex+Century, data=survival)
+diff_Sex_Century
+## both are significant
+
+## logrank test: log-rank test is useful for comparing survival curves in two or more groups 
+#using survdiff in survival package
+survdiff(Surv(Death_Age, Event)~Sex, data=survival)
+
+survdiff(Surv(Death_Age, Event)~Century, data=survival)
+
+survdiff(Surv(Death_Age, Event)~Century+Sex, data=survival)
+```
+
