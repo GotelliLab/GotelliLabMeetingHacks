@@ -1,0 +1,203 @@
+---
+title: "Local vs Imported Honeybee Stocks - Multivariate Analyses"
+author: "P. Alexander Burnham"
+date: "November 12, 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, warning=FALSE, message=FALSE, results=FALSE}
+
+# Preliminaries:
+
+# Clear memory of characters:
+ls()
+rm(list=ls())
+
+# Set Working Directory: 
+setwd("~/BurnhamAlexPrivate/LocalCaliforniaStudy_Hamilton")
+
+# Read in Data:
+data <- read.table("LoCalMV.csv", header=TRUE, sep = ",", stringsAsFactors = FALSE) 
+
+data$logDWV <- log(data$DWV + 1)
+data$logBQCV <- log(data$BQCV + 1)
+data$logIAPV <- log(data$IAPV + 1)
+data$logNosema <- log(data$Nosema + 1)
+
+# split data into two time points:
+x <- split(data, data$Time)
+Time1 <- x$`1`
+Time2 <- x$`2`
+
+# required packages:
+library(plyr)
+library(ggplot2)
+library(dplyr)
+library(lme4)
+library(car)
+library(MASS)
+library(vegan)
+library(factoextra)
+library(candisc)
+
+```
+
+
+
+# Linear Classification Anlaysis for all Vars on Grouping into Treatments (2 time points):
+
+
+## LDA for Time Point 1:
+
+```{r, warning=FALSE}
+# USEING CANDISC
+lm.mod <- lm(cbind(Pollen, logBQCV, logIAPV, logDWV, Varroa, logNosema, Mass, Brood)~Origin, data=Time1)
+anova(lm.mod, test="Wilks")
+
+can.mod <- candisc(lm.mod, term="Origin")
+can.mod
+summary(can.mod)
+
+```
+
+
+## Classification Analysis for Time point 1:
+
+```{r, warning=FALSE}
+
+# run LDA
+time1 <- lda(Origin~ Pollen + logBQCV + logIAPV + logDWV + Varroa + logNosema + Mass + Brood, data=Time1, na.action="na.omit")
+plot(time1, col = c("blue"))
+
+# creeat data set that includes only variables of interest:
+x <- dplyr::select(Time1, Origin, Pollen, logBQCV, logIAPV, logDWV, Varroa, logNosema, Mass, Brood)
+
+# create predictions based on confusion matrix
+predictions <- predict(time1, x[,2:9])$class
+
+# summarize accuracy
+cm <- table(predictions, x$Origin)
+prop.table(cm,1)
+
+```
+
+## PERMANOVA - Time point 1
+```{r}
+
+# create dissimalarity matrix
+# create matrix for PERM
+LoCal1x <- na.omit(Time1)
+Dis1 <- dplyr::select(LoCal1x, Pollen, logBQCV, logIAPV, logDWV, Varroa, logNosema, Mass, Brood)
+
+# run PERMANOVA
+envdist1 <- vegdist(Dis1, method= "jaccard", na.rm=TRUE)
+AD1 <- adonis(envdist1~Origin, data=LoCal1x)
+AD1
+```
+
+
+
+
+
+## LDA for Time Point 2:
+
+```{r, warning=FALSE}
+# USEING CANDISC
+lm.mod2 <- lm(cbind(Pollen, logBQCV, logIAPV, logDWV, Varroa, logNosema, Mass, Brood)~Origin, data=Time2)
+anova(lm.mod2, test="Wilks")
+
+can.mod2 <- candisc(lm.mod2, term="Origin")
+can.mod2
+summary(can.mod2)
+
+```
+
+
+## Classification Analysis for Time point 1:
+
+```{r, warning=FALSE}
+
+# run LDA
+time2 <- lda(Origin~ Pollen + logBQCV + logIAPV + logDWV + Varroa + logNosema + Mass + Brood, data=Time2, na.action="na.omit")
+plot(time2, col = c("blue"))
+
+x1 <- dplyr::select(Time2, Origin, Pollen, logBQCV, logIAPV, logDWV, Varroa, logNosema, Mass, Brood)
+
+predictions2 <- predict(time2, x1[,2:9])$class
+# summarize accuracy
+cm1 <- table(predictions2, x1$Origin)
+prop.table(cm1,1)
+
+```
+
+## PERMANOVA - Time point 2
+```{r}
+
+# create dissimalarity matrix
+LoCal2x <- na.omit(Time2)
+Dis2 <- dplyr::select(LoCal2x, Pollen, logBQCV, logIAPV, logDWV, Varroa, logNosema, Mass, Brood)
+
+# run PERMNAOVA
+envdist <- vegdist(Dis2, method= "jaccard", na.rm=TRUE)
+AD2 <- adonis(envdist~Origin, data=LoCal2x)
+AD2
+```
+
+
+
+![Figure for a Project I did with three groups:](/Users/phillipburnham/AndreCollaborations/QueenExperimentBurnham/Fig3.png)
+
+
+
+# NMDS (Non-metric Multidimensional Scaling)
+
+## nMDS for Time Point 1:
+```{r, message=FALSE, warning=FALSE, results=FALSE}
+
+# run nMDS
+MDS1 <- metaMDS(envdist1, center=TRUE, autotransform = FALSE)
+
+#Using the scores function from vegan to extract the site scores and convert to a data.frame
+data.scores1 <- as.data.frame(vegan::scores(MDS1))  
+data.scores1$Origin <- LoCal1x$Origin
+
+NMDS2 <- ggplot(data.scores1, aes(NMDS1,NMDS2, color=Origin))+geom_point(size=2.5) + theme_minimal(base_size = 19) + scale_colour_manual(values = c("red", "blue")) + theme(axis.line.x = element_line(colour = 'black', size=0.5, linetype='solid'), axis.line.y = element_line(colour = 'black', size=0.5, linetype='solid')) + stat_ellipse(show.legend = FALSE, level=.7)
+NMDS2
+
+
+
+```
+
+
+
+## nMDS for Time Point 2:
+```{r, message=FALSE, warning=FALSE, results=FALSE}
+
+# run nMDS model:
+MDS <- metaMDS(envdist, center=TRUE, autotransform = FALSE)
+
+#Using the scores function from vegan to extract the site scores and convert to a data.frame
+data.scores <- as.data.frame(vegan::scores(MDS)) 
+data.scores$Origin <- LoCal2x$Origin
+
+# graph for nMDA
+NMDS3 <- ggplot(data.scores, aes(NMDS1,NMDS2, color=Origin))+geom_point(size=2.5) + theme_minimal(base_size = 19) + scale_colour_manual(values = c("red", "blue")) + theme(axis.line.x = element_line(colour = 'black', size=0.5, linetype='solid'), axis.line.y = element_line(colour = 'black', size=0.5, linetype='solid')) + stat_ellipse(show.legend = FALSE, level=.7)
+NMDS3
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

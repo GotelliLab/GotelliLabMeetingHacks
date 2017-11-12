@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 ---
 title: "Gotelli Lab Meeting Hacks"
 author: "Nick Gotelli"
@@ -16,6 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of us presents a brief, useful computational hack for some useful tool in statistics or graphics.
 
 Here are the links to each weekly hack:
+
+
+
+####12 November 2017 (Alex Burnham)   
+[Multivariate Analyses](AlexBurnham/LoCal_MV.html)   
 
 ####30 October 2017 (Lauren Ash)   
 [Graveyard with Survival Package](LaurenAsh/Graveyard_Survival_Package.html)   
@@ -41,42 +45,4 @@ Here are the links to each weekly hack:
 [Power test for one-way ANOVA with artificial data](NickGotelli/PowerTestANOVA.html)
 
 [PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
-=======
----
-title: "Gotelli Lab Meeting Hacks"
-author: "Nick Gotelli"
-date: "September 10, 2017"
-output: 
-  html_document: 
-    highlight: tango
-    theme: united
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of us presents a brief, useful computational hack for some useful tool in statistics or graphics.
-
-Here are the links to each weekly hack:
-
-####23 October 2017 (Pett)
-[Repeated Measures ANOVA](LindseyPett/Pett_AVbyFgTime.html)    
-   
-[Repeated Measure ANOVA Script](LindseyPett/Pett_AVbyFgTime.R)   
-   
-####17 October 2017 (Gotelli)
-[Lots of cool color palettes for plotting](NickGotelli/ColorPalettes.html)
-
-[ColorPalettes.R](NickGotelli/ColorPalettes.R)
-
-####2 October 2017 (Northrop)
-[Drawing a rank order plot in base R](AmandaNorthrop/DrawingRankOrderPlot.html)
-
-[DrawingRankOrderPlot.R](AmandaNorthrop/DrawingRankOrderPlot.R)
-
-####18 September 2017 (Gotelli)
-[Power test for one-way ANOVA with artificial data](NickGotelli/PowerTestANOVA.html)
-
-[PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
->>>>>>> Stashed changes
