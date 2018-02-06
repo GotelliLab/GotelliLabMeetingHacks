@@ -1,0 +1,116 @@
+---
+title: "Multiple plots in `ggplot2` with `patchwork`"
+author: "Nick Gotelli"
+date: "February 5, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE)
+```
+
+The `patchwork` package makes it very easy to create layouts in ggplot that have multiple panels.
+
+The package is by Thomas Lin Pederson, and you can get it from his GitHub site:
+
+https://github.com/thomasp85/patchwork
+
+# Installation
+This is a little tricky, because the installation is not from CRAN. First, you need to install devtools, which is available from CRAN. Then load the devtools library and run the `install_github` command from the console:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+library(devtools)
+install_github("thomasp85/patchwork")
+```
+
+I had a bit of trouble with this and ended up re-installing ggplot, but eventually it all worked.
+
+# Sample Data Sets
+Here are some quick and dirty artificial data just to have something to plot:
+
+```{r}
+library(ggplot2)
+library(patchwork)
+
+d1 <- runif(500)
+d2 <- rep(c("Treatment","Control"),each=250)
+d3 <- rbeta(500,shape1=100,shape2=3)
+d4 <- d3 + rnorm(500,mean=0,sd=0.1)
+plotData <- data.frame(d1,d2,d3,d4)
+str(plotData)
+```
+# Create 4 Simple `ggplot` Graphs
+```{r}
+p1 <- ggplot(data=plotData) + geom_point(aes(x=d3, y=d4))
+p1
+
+p2 <- ggplot(data=plotData) + geom_boxplot(aes(x=d2,y=d1,fill=d2))+
+theme(legend.position="none")
+p2
+
+p3 <- ggplot(data=plotData) +
+  geom_histogram(aes(x=d1, color=I("black"),fill=I("orchid")))
+p3
+
+p4 <- ggplot(data=plotData) +
+  geom_histogram(aes(x=d3, color=I("black"),fill=I("goldenrod")))
+p4
+```
+
+# Place Two Plots Horizontally
+```{r}
+p1 + p2
+```
+
+# Place Three Plots Vertically
+```{r}
+p1 + p2 + p3 + plot_layout(ncol=1)
+```
+
+# Change Relative Area Of Each Plot
+
+```{r}
+p1 + p2 + plot_layout(ncol=1,heights=c(2,1))
+
+p1 + p2 + plot_layout(ncol=2,widths=c(2,1))
+```
+
+# Add A Spacer Plot
+```{r}
+# not working correctly!
+p1 + plot_spacer() + p2
+```
+
+# Use Nested Layouts
+
+```{r}
+p1 + {
+  p2 + {
+    p3 +
+      p4 +
+      plot_layout(ncol=1)
+  }
+} +
+  plot_layout(ncol=1)
+```
+
+# `-` Operator For Subtrack Placement
+
+```{r}
+p1 + p2 - p3 + plot_layout(ncol=1)
+```
+
+# `\` and `|` Operators For Intuitive Layouts
+
+```{r}
+(p1 | p2 | p3)/p4
+
+(p1 | p2)/(p3 | p4)
+
+(p1 / p2 /p3) | p4
+```
+
+These last seem the most useful and very easy to remember.
+
+There are a few other features on the `patchwork` site to read about, but this gives us the basic functionality for creating composite panels of any kind.
