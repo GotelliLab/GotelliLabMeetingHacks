@@ -1,0 +1,107 @@
+---
+title: "Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle"
+author: "Nick Gotelli"
+date: "February 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE)
+```
+
+### Setting the random number seed with a character string
+
+We all know how to set the random number seed with an arbitrary (large) integer to generate repeatable results:
+
+```{r}
+set.seed(02252018)
+runif(1)
+```
+But here is a function from the `TeachingDemos` package that will create a random number seed from any character string you feed it:
+
+```{r}
+# install TeachingDemos package from CRAN
+library(TeachingDemos)
+z <- char2seed("espresso",set=FALSE)
+z
+set.seed(z)
+runif(1)
+```
+So, the program takes any character string (including spaces and other characters) and converts it to an integer. It ignores anything but letters and numbers, and it does not distinguish between upper and lower case letters. The exact algorithm is not obvious, but it is clear that it is not making a simple mapping from letters to integers.
+
+Doing this more concisely, you would not change the `set` option:
+
+```{r}
+char2seed("chai latte with soy")
+runif(1)
+```
+
+This makes for some whimsical coding, and there is only 1 extra line of code, which is to call the Teaching Demo library. You could use this in your teaching. For example, each student could have a different random number seed by using their own name, but the instructor could still replicate their work with the same seed. Fun!
+
+### Removing NAs from matrices and data frames
+
+Cleanly stripping out NA values is important for working with real data sets. There are a number of ways you can do this, but some of the methods can be slow, and others may be specific to only a particular data type (e.g., numerics, but not character strings). After poking around on Stack Overflow, I learned that the best option is to use the built in function `complete.cases`. For an atomic vector of any type, this returns a boolean vector of TRUE/FALSE values based on the presence of an NA:
+
+```{r}
+dirtyVec <- c(3.2, NA, 2.2, 6, 5)
+complete.cases(dirtyVec)
+
+# use this to select the NA values (inverse)
+!complete.cases(dirtyVec)
+```
+
+To remove all rows with 1 or more NAs from a data frame or vector, use this function to subset the rows:
+
+```{r, eval=FALSE}
+# removes all rows with 1 or more NAs
+cleanFrame <- dirtyFrame[complete.cases(dirtyFrame),]
+
+```
+
+To remove all rows with 1 or more NAs from only certain columns, do it this way:
+
+```{r, eval=FALSE}
+# remove rows with NAs only in column 5 or column 6
+cleanFrame <- dirtyFrame[complete.cases(dirtyFrame[,(5:6)]),]
+
+```
+
+These same operations can be carried out in dplyr and other packages, but the `complete.cases` function is in base R and is concise and fast. Use it!
+
+
+### A mysterious ggplot puzzle
+
+I was trying to write some code to cycle through a for loop, create a ggplot graph, and then save the graph as a list item in a vector of lists. Then I could later assemble them in `patchwork`. It all works fine, but it seems to save only the final plot in all of the slots once they are created! Any ideas would be welcome. 
+
+```{r, message=FALSE}
+
+# Using a vector of lists to store ggplot objects in a loop
+# February 19, 2018
+library(ggplot2)
+library(patchwork)
+n <- 3 # number of plots to create
+plotList <- vector("list",n) # taken from a StackOverflow answer from Venables
+# Now run a little for loop to create, plot, and store 3 replicates
+for(i in seq(plotList)) {
+  z <- rnorm(100)
+  print(head(z)) # confirm that a different set of values is crated for z
+  print(i)       # confirm that the counter is incrementing
+  plotList[[i]] <- qplot(x=z,color=I("black"),fill=I("goldenrod"))
+  print(plotList[[i]]) # this works fine to print each plot from the list 
+# as it is created
+}
+
+# But outside of the loop, now it is using and plotting only the
+# final data set for all 3 plots!!
+print(plotList[[1]])
+print(plotList[[2]])
+print(plotList[[3]])
+
+# same problem when we do this in patchwork
+plotList[[1]] | plotList[[2]] | plotList[[3]]
+
+# so the loop is working fine and each plot appears to be stored and 
+# retrieved from the vector of lists,
+# but outside of the loop, all of the elements are yielding the same data
+```
+

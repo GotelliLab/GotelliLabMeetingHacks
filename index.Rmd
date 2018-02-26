@@ -47,7 +47,11 @@ Here are the links to each weekly hack:
 [PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
 
 
-####13 February 2018 (Gotelli)
+####12 February 2018 (Gotelli)
 [Multi-panel layouts in ggplot](NickGotelli/ggplotPatchwork.html)
 
 [ggplotPatchwork.R](NickGotelli/ggplotPatchwork.R)
+
+####26 February 2018 (Gotelli)
+[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle](NickGotelli/SeedsNAPuzzle.html)
+
