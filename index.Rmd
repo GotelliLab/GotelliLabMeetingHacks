@@ -16,7 +16,13 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####26 February 2018 (Gotelli)
+[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle](NickGotelli/SeedsNAPuzzle.html)
 
+####12 February 2018 (Gotelli)
+[Multi-panel layouts in ggplot](NickGotelli/ggplotPatchwork.html)
+
+[ggplotPatchwork.R](NickGotelli/ggplotPatchwork.R)
 
 ####12 November 2017 (Alex Burnham)   
 [Multivariate Analyses](AlexBurnham/LoCal_MV.html)   
@@ -47,11 +53,5 @@ Here are the links to each weekly hack:
 [PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
 
 
-####12 February 2018 (Gotelli)
-[Multi-panel layouts in ggplot](NickGotelli/ggplotPatchwork.html)
 
-[ggplotPatchwork.R](NickGotelli/ggplotPatchwork.R)
-
-####26 February 2018 (Gotelli)
-[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle](NickGotelli/SeedsNAPuzzle.html)
 
