@@ -1,0 +1,248 @@
+<html>
+<head>
+<title>robotThree.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(128,128,128); }
+.s3 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+robotThree.py</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<a name="l1"><span class="ln">1    </span></a><span class="s0">import </span><span class="s1">constants </span><span class="s0">as </span><span class="s1">c 
+<a name="l2"><span class="ln">2    </span></a></span><span class="s0">import </span><span class="s1">random 
+<a name="l3"><span class="ln">3    </span></a> 
+<a name="l4"><span class="ln">4    </span></a></span><span class="s0">class </span><span class="s1">ROBOT: 
+<a name="l5"><span class="ln">5    </span></a>    </span><span class="s0">def </span><span class="s1">__init__(self</span><span class="s0">, </span><span class="s1">sim</span><span class="s0">, </span><span class="s1">wts): 
+<a name="l6"><span class="ln">6    </span></a> 
+<a name="l7"><span class="ln">7    </span></a>        self.send_objects(sim) 
+<a name="l8"><span class="ln">8    </span></a>        self.send_joints(sim) 
+<a name="l9"><span class="ln">9    </span></a>        self.send_sensors(sim) 
+<a name="l10"><span class="ln">10   </span></a>        self.send_neurons(sim) 
+<a name="l11"><span class="ln">11   </span></a>        self.send_synapses(sim</span><span class="s0">, </span><span class="s1">wts) 
+<a name="l12"><span class="ln">12   </span></a> 
+<a name="l13"><span class="ln">13   </span></a>        </span><span class="s0">del </span><span class="s1">self.O 
+<a name="l14"><span class="ln">14   </span></a>        </span><span class="s0">del </span><span class="s1">self.J 
+<a name="l15"><span class="ln">15   </span></a>        </span><span class="s0">del </span><span class="s1">self.S 
+<a name="l16"><span class="ln">16   </span></a>        </span><span class="s0">del </span><span class="s1">self.SN 
+<a name="l17"><span class="ln">17   </span></a>        </span><span class="s0">del </span><span class="s1">self.MN 
+<a name="l18"><span class="ln">18   </span></a> 
+<a name="l19"><span class="ln">19   </span></a>    </span><span class="s0">def </span><span class="s1">send_objects(self</span><span class="s0">, </span><span class="s1">sim): 
+<a name="l20"><span class="ln">20   </span></a> 
+<a name="l21"><span class="ln">21   </span></a>        </span><span class="s2"># send in an object</span><span class="s1"> 
+<a name="l22"><span class="ln">22   </span></a>        self.O0 = sim.send_box(x=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=</span><span class="s3">2.5</span><span class="s1">*c.L</span><span class="s0">, </span><span class="s1">width=c.L</span><span class="s0">, </span><span class="s1">height=c.R * </span><span class="s3">2</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">.5</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">.5</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">.5</span><span class="s1">) 
+<a name="l23"><span class="ln">23   </span></a> 
+<a name="l24"><span class="ln">24   </span></a> 
+<a name="l25"><span class="ln">25   </span></a> 
+<a name="l26"><span class="ln">26   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l27"><span class="ln">27   </span></a>        self.O1 = sim.send_cylinder(x=c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=c.L/</span><span class="s3">2</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l28"><span class="ln">28   </span></a> 
+<a name="l29"><span class="ln">29   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l30"><span class="ln">30   </span></a>        self.O2 = sim.send_cylinder(x=c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=c.L/</span><span class="s3">2</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l31"><span class="ln">31   </span></a> 
+<a name="l32"><span class="ln">32   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l33"><span class="ln">33   </span></a>        self.O3 = sim.send_cylinder(x=-c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=c.L/</span><span class="s3">2</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l34"><span class="ln">34   </span></a> 
+<a name="l35"><span class="ln">35   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l36"><span class="ln">36   </span></a>        self.O4 = sim.send_cylinder(x=-c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=c.L/</span><span class="s3">2</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">1</span><span class="s0">,  </span><span class="s1">r1=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l37"><span class="ln">37   </span></a> 
+<a name="l38"><span class="ln">38   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l39"><span class="ln">39   </span></a>        self.O5 = sim.send_cylinder(x=c.L</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=(c.L)/</span><span class="s3">2 </span><span class="s1">+ c.R</span><span class="s0">, </span><span class="s1">length=c.L</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">1</span><span class="s1">) 
+<a name="l40"><span class="ln">40   </span></a> 
+<a name="l41"><span class="ln">41   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l42"><span class="ln">42   </span></a>        self.O6 = sim.send_cylinder(x=c.L</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=(c.L)/</span><span class="s3">2 </span><span class="s1">+ c.R</span><span class="s0">, </span><span class="s1">length=c.L</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">1</span><span class="s1">) 
+<a name="l43"><span class="ln">43   </span></a> 
+<a name="l44"><span class="ln">44   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l45"><span class="ln">45   </span></a>        self.O7 = sim.send_cylinder(x=-c.L</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=(c.L)/</span><span class="s3">2 </span><span class="s1">+ c.R</span><span class="s0">, </span><span class="s1">length=c.L</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">1</span><span class="s1">) 
+<a name="l46"><span class="ln">46   </span></a> 
+<a name="l47"><span class="ln">47   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l48"><span class="ln">48   </span></a>        self.O8 = sim.send_cylinder(x=-c.L</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=(c.L)/</span><span class="s3">2 </span><span class="s1">+ c.R</span><span class="s0">, </span><span class="s1">length=c.L</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">1</span><span class="s1">) 
+<a name="l49"><span class="ln">49   </span></a> 
+<a name="l50"><span class="ln">50   </span></a> 
+<a name="l51"><span class="ln">51   </span></a> 
+<a name="l52"><span class="ln">52   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l53"><span class="ln">53   </span></a>        self.O9 = sim.send_cylinder(x=c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=c.L / </span><span class="s3">2</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">,</span><span class="s1"> 
+<a name="l54"><span class="ln">54   </span></a>                                    r1=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l55"><span class="ln">55   </span></a> 
+<a name="l56"><span class="ln">56   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l57"><span class="ln">57   </span></a>        self.O10 = sim.send_cylinder(x=-c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">, </span><span class="s1">length=c.L / </span><span class="s3">2</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">,</span><span class="s1"> 
+<a name="l58"><span class="ln">58   </span></a>                                    r1=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l59"><span class="ln">59   </span></a> 
+<a name="l60"><span class="ln">60   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l61"><span class="ln">61   </span></a>        self.O11 = sim.send_cylinder(x=-c.L</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=(c.L) / </span><span class="s3">2 </span><span class="s1">+ c.R</span><span class="s0">, </span><span class="s1">length=c.L</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r1=</span><span class="s3">0</span><span class="s0">,</span><span class="s1"> 
+<a name="l62"><span class="ln">62   </span></a>                                    r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">1</span><span class="s1">) 
+<a name="l63"><span class="ln">63   </span></a> 
+<a name="l64"><span class="ln">64   </span></a>        </span><span class="s2"># sends a cylinder into environment</span><span class="s1"> 
+<a name="l65"><span class="ln">65   </span></a>        self.O12 = sim.send_cylinder(x=c.L</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=(c.L) / </span><span class="s3">2 </span><span class="s1">+ c.R</span><span class="s0">, </span><span class="s1">length=c.L</span><span class="s0">, </span><span class="s1">radius=c.R</span><span class="s0">, </span><span class="s1">r=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">g=</span><span class="s3">1</span><span class="s0">, </span><span class="s1">b=</span><span class="s3">0</span><span class="s0">,</span><span class="s1"> 
+<a name="l66"><span class="ln">66   </span></a>                                    r1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">r3=</span><span class="s3">1</span><span class="s1">) 
+<a name="l67"><span class="ln">67   </span></a> 
+<a name="l68"><span class="ln">68   </span></a>    </span><span class="s0">def </span><span class="s1">send_joints(self</span><span class="s0">, </span><span class="s1">sim): 
+<a name="l69"><span class="ln">69   </span></a> 
+<a name="l70"><span class="ln">70   </span></a> 
+<a name="l71"><span class="ln">71   </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l72"><span class="ln">72   </span></a>        self.J0 = sim.send_hinge_joint(first_body_id=self.O0</span><span class="s0">, </span><span class="s1">second_body_id=self.O1</span><span class="s0">,</span><span class="s1"> 
+<a name="l73"><span class="ln">73   </span></a>                                       x=c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l74"><span class="ln">74   </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n3=-</span><span class="s3">1</span><span class="s1">) 
+<a name="l75"><span class="ln">75   </span></a> 
+<a name="l76"><span class="ln">76   </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l77"><span class="ln">77   </span></a>        self.J1 = sim.send_hinge_joint(first_body_id=self.O1</span><span class="s0">, </span><span class="s1">second_body_id=self.O5</span><span class="s0">,</span><span class="s1"> 
+<a name="l78"><span class="ln">78   </span></a>                                       x=c.L</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l79"><span class="ln">79   </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=-</span><span class="s3">1</span><span class="s0">, </span><span class="s1">n3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l80"><span class="ln">80   </span></a> 
+<a name="l81"><span class="ln">81   </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l82"><span class="ln">82   </span></a>        self.J2 = sim.send_hinge_joint(first_body_id=self.O0</span><span class="s0">, </span><span class="s1">second_body_id=self.O2</span><span class="s0">,</span><span class="s1"> 
+<a name="l83"><span class="ln">83   </span></a>                                       x=c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l84"><span class="ln">84   </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n3=-</span><span class="s3">1</span><span class="s1">) 
+<a name="l85"><span class="ln">85   </span></a> 
+<a name="l86"><span class="ln">86   </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l87"><span class="ln">87   </span></a>        self.J3 = sim.send_hinge_joint(first_body_id=self.O2</span><span class="s0">, </span><span class="s1">second_body_id=self.O6</span><span class="s0">,</span><span class="s1"> 
+<a name="l88"><span class="ln">88   </span></a>                                       x=c.L</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l89"><span class="ln">89   </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=-</span><span class="s3">1</span><span class="s0">, </span><span class="s1">n3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l90"><span class="ln">90   </span></a> 
+<a name="l91"><span class="ln">91   </span></a>        </span><span class="s2"># creates a joint between the two cylinders (PROBLEM WITH GREEN LEG JOINT TO BODY)</span><span class="s1"> 
+<a name="l92"><span class="ln">92   </span></a>        self.J4 = sim.send_hinge_joint(first_body_id=self.O0</span><span class="s0">, </span><span class="s1">second_body_id=self.O3</span><span class="s0">,</span><span class="s1"> 
+<a name="l93"><span class="ln">93   </span></a>                                       x=-c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l94"><span class="ln">94   </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n3=-</span><span class="s3">1</span><span class="s1">) 
+<a name="l95"><span class="ln">95   </span></a> 
+<a name="l96"><span class="ln">96   </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l97"><span class="ln">97   </span></a>        self.J5 = sim.send_hinge_joint(first_body_id=self.O3</span><span class="s0">, </span><span class="s1">second_body_id=self.O7</span><span class="s0">,</span><span class="s1"> 
+<a name="l98"><span class="ln">98   </span></a>                                       x=-c.L</span><span class="s0">, </span><span class="s1">y=c.L-c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l99"><span class="ln">99   </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=-</span><span class="s3">1</span><span class="s0">, </span><span class="s1">n3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l100"><span class="ln">100  </span></a> 
+<a name="l101"><span class="ln">101  </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l102"><span class="ln">102  </span></a>        self.J6 = sim.send_hinge_joint(first_body_id=self.O0</span><span class="s0">, </span><span class="s1">second_body_id=self.O4</span><span class="s0">,</span><span class="s1"> 
+<a name="l103"><span class="ln">103  </span></a>                                       x=-c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l104"><span class="ln">104  </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n3=-</span><span class="s3">1</span><span class="s1">) 
+<a name="l105"><span class="ln">105  </span></a> 
+<a name="l106"><span class="ln">106  </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l107"><span class="ln">107  </span></a>        self.J7 = sim.send_hinge_joint(first_body_id=self.O4</span><span class="s0">, </span><span class="s1">second_body_id=self.O8</span><span class="s0">,</span><span class="s1"> 
+<a name="l108"><span class="ln">108  </span></a>                                       x=-c.L</span><span class="s0">, </span><span class="s1">y=-c.L+c.R</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l109"><span class="ln">109  </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=-</span><span class="s3">1</span><span class="s0">, </span><span class="s1">n3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l110"><span class="ln">110  </span></a> 
+<a name="l111"><span class="ln">111  </span></a> 
+<a name="l112"><span class="ln">112  </span></a> 
+<a name="l113"><span class="ln">113  </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l114"><span class="ln">114  </span></a>        self.J8 = sim.send_hinge_joint(first_body_id=self.O0</span><span class="s0">, </span><span class="s1">second_body_id=self.O9</span><span class="s0">,</span><span class="s1"> 
+<a name="l115"><span class="ln">115  </span></a>                                       x=c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l116"><span class="ln">116  </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n3=-</span><span class="s3">1</span><span class="s1">) 
+<a name="l117"><span class="ln">117  </span></a> 
+<a name="l118"><span class="ln">118  </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l119"><span class="ln">119  </span></a>        self.J11 = sim.send_hinge_joint(first_body_id=self.O9</span><span class="s0">, </span><span class="s1">second_body_id=self.O12</span><span class="s0">,</span><span class="s1"> 
+<a name="l120"><span class="ln">120  </span></a>                                        x=c.L</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L + c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l121"><span class="ln">121  </span></a>                                        n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=-</span><span class="s3">1</span><span class="s0">, </span><span class="s1">n3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l122"><span class="ln">122  </span></a> 
+<a name="l123"><span class="ln">123  </span></a> 
+<a name="l124"><span class="ln">124  </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l125"><span class="ln">125  </span></a>        self.J10 = sim.send_hinge_joint(first_body_id=self.O0</span><span class="s0">, </span><span class="s1">second_body_id=self.O10</span><span class="s0">,</span><span class="s1"> 
+<a name="l126"><span class="ln">126  </span></a>                                       x=-c.L/</span><span class="s3">1.4</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l127"><span class="ln">127  </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n3=-</span><span class="s3">1</span><span class="s1">) 
+<a name="l128"><span class="ln">128  </span></a> 
+<a name="l129"><span class="ln">129  </span></a> 
+<a name="l130"><span class="ln">130  </span></a>        </span><span class="s2"># creates a joint between the two cylinders</span><span class="s1"> 
+<a name="l131"><span class="ln">131  </span></a>        self.J9 = sim.send_hinge_joint(first_body_id=self.O10</span><span class="s0">, </span><span class="s1">second_body_id=self.O11</span><span class="s0">,</span><span class="s1"> 
+<a name="l132"><span class="ln">132  </span></a>                                       x=-c.L</span><span class="s0">, </span><span class="s1">y=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">z=c.L+c.R</span><span class="s0">,</span><span class="s1"> 
+<a name="l133"><span class="ln">133  </span></a>                                       n1=</span><span class="s3">0</span><span class="s0">, </span><span class="s1">n2=-</span><span class="s3">1</span><span class="s0">, </span><span class="s1">n3=</span><span class="s3">0</span><span class="s1">) 
+<a name="l134"><span class="ln">134  </span></a> 
+<a name="l135"><span class="ln">135  </span></a> 
+<a name="l136"><span class="ln">136  </span></a> 
+<a name="l137"><span class="ln">137  </span></a> 
+<a name="l138"><span class="ln">138  </span></a> 
+<a name="l139"><span class="ln">139  </span></a>    </span><span class="s0">def </span><span class="s1">send_sensors(self</span><span class="s0">, </span><span class="s1">sim): 
+<a name="l140"><span class="ln">140  </span></a> 
+<a name="l141"><span class="ln">141  </span></a>        </span><span class="s2"># add a sensor to the white cylinder</span><span class="s1"> 
+<a name="l142"><span class="ln">142  </span></a>        self.T0 = sim.send_touch_sensor(body_id=self.O5) 
+<a name="l143"><span class="ln">143  </span></a> 
+<a name="l144"><span class="ln">144  </span></a>        </span><span class="s2"># add a sensor to the red cylinder</span><span class="s1"> 
+<a name="l145"><span class="ln">145  </span></a>        self.T1 = sim.send_touch_sensor(body_id=self.O6) 
+<a name="l146"><span class="ln">146  </span></a> 
+<a name="l147"><span class="ln">147  </span></a>        </span><span class="s2"># adds a proprioceptive sensor to joint</span><span class="s1"> 
+<a name="l148"><span class="ln">148  </span></a>        self.T2 = sim.send_touch_sensor(body_id=self.O7) 
+<a name="l149"><span class="ln">149  </span></a> 
+<a name="l150"><span class="ln">150  </span></a>        </span><span class="s2"># adds a ray sensor to the end of the red cylinder:</span><span class="s1"> 
+<a name="l151"><span class="ln">151  </span></a>        self.T3 = sim.send_touch_sensor(body_id=self.O8) 
+<a name="l152"><span class="ln">152  </span></a> 
+<a name="l153"><span class="ln">153  </span></a>        </span><span class="s2"># adds a proprioceptive sensor to joint</span><span class="s1"> 
+<a name="l154"><span class="ln">154  </span></a>        self.T4 = sim.send_touch_sensor(body_id=self.O11) 
+<a name="l155"><span class="ln">155  </span></a> 
+<a name="l156"><span class="ln">156  </span></a>        </span><span class="s2"># adds a ray sensor to the end of the red cylinder:</span><span class="s1"> 
+<a name="l157"><span class="ln">157  </span></a>        self.T5 = sim.send_touch_sensor(body_id=self.O12) 
+<a name="l158"><span class="ln">158  </span></a> 
+<a name="l159"><span class="ln">159  </span></a>        </span><span class="s2"># adds position sensor to robot</span><span class="s1"> 
+<a name="l160"><span class="ln">160  </span></a>        self.L4 = sim.send_light_sensor(body_id=self.O0) 
+<a name="l161"><span class="ln">161  </span></a> 
+<a name="l162"><span class="ln">162  </span></a>    </span><span class="s0">def </span><span class="s1">send_neurons(self</span><span class="s0">, </span><span class="s1">sim): 
+<a name="l163"><span class="ln">163  </span></a> 
+<a name="l164"><span class="ln">164  </span></a>        self.O = {} 
+<a name="l165"><span class="ln">165  </span></a>        self.O[</span><span class="s3">0</span><span class="s1">] = self.O0 
+<a name="l166"><span class="ln">166  </span></a>        self.O[</span><span class="s3">1</span><span class="s1">] = self.O1 
+<a name="l167"><span class="ln">167  </span></a>        self.O[</span><span class="s3">2</span><span class="s1">] = self.O2 
+<a name="l168"><span class="ln">168  </span></a>        self.O[</span><span class="s3">3</span><span class="s1">] = self.O3 
+<a name="l169"><span class="ln">169  </span></a>        self.O[</span><span class="s3">4</span><span class="s1">] = self.O4 
+<a name="l170"><span class="ln">170  </span></a>        self.O[</span><span class="s3">5</span><span class="s1">] = self.O5 
+<a name="l171"><span class="ln">171  </span></a>        self.O[</span><span class="s3">6</span><span class="s1">] = self.O6 
+<a name="l172"><span class="ln">172  </span></a>        self.O[</span><span class="s3">7</span><span class="s1">] = self.O7 
+<a name="l173"><span class="ln">173  </span></a>        self.O[</span><span class="s3">8</span><span class="s1">] = self.O8 
+<a name="l174"><span class="ln">174  </span></a>        self.O[</span><span class="s3">9</span><span class="s1">] = self.O9 
+<a name="l175"><span class="ln">175  </span></a>        self.O[</span><span class="s3">10</span><span class="s1">] = self.O10 
+<a name="l176"><span class="ln">176  </span></a>        self.O[</span><span class="s3">11</span><span class="s1">] = self.O11 
+<a name="l177"><span class="ln">177  </span></a>        self.O[</span><span class="s3">12</span><span class="s1">] = self.O12 
+<a name="l178"><span class="ln">178  </span></a> 
+<a name="l179"><span class="ln">179  </span></a> 
+<a name="l180"><span class="ln">180  </span></a> 
+<a name="l181"><span class="ln">181  </span></a>        self.J = {} 
+<a name="l182"><span class="ln">182  </span></a>        self.J[</span><span class="s3">0</span><span class="s1">] = self.J0 
+<a name="l183"><span class="ln">183  </span></a>        self.J[</span><span class="s3">1</span><span class="s1">] = self.J1 
+<a name="l184"><span class="ln">184  </span></a>        self.J[</span><span class="s3">2</span><span class="s1">] = self.J2 
+<a name="l185"><span class="ln">185  </span></a>        self.J[</span><span class="s3">3</span><span class="s1">] = self.J3 
+<a name="l186"><span class="ln">186  </span></a>        self.J[</span><span class="s3">4</span><span class="s1">] = self.J4 
+<a name="l187"><span class="ln">187  </span></a>        self.J[</span><span class="s3">5</span><span class="s1">] = self.J5 
+<a name="l188"><span class="ln">188  </span></a>        self.J[</span><span class="s3">6</span><span class="s1">] = self.J6 
+<a name="l189"><span class="ln">189  </span></a>        self.J[</span><span class="s3">7</span><span class="s1">] = self.J7 
+<a name="l190"><span class="ln">190  </span></a>        self.J[</span><span class="s3">8</span><span class="s1">] = self.J8 
+<a name="l191"><span class="ln">191  </span></a>        self.J[</span><span class="s3">9</span><span class="s1">] = self.J9 
+<a name="l192"><span class="ln">192  </span></a>        self.J[</span><span class="s3">10</span><span class="s1">] = self.J10 
+<a name="l193"><span class="ln">193  </span></a>        self.J[</span><span class="s3">11</span><span class="s1">] = self.J11 
+<a name="l194"><span class="ln">194  </span></a> 
+<a name="l195"><span class="ln">195  </span></a> 
+<a name="l196"><span class="ln">196  </span></a>        self.S = {} 
+<a name="l197"><span class="ln">197  </span></a>        self.S[</span><span class="s3">0</span><span class="s1">] = self.T0 
+<a name="l198"><span class="ln">198  </span></a>        self.S[</span><span class="s3">1</span><span class="s1">] = self.T1 
+<a name="l199"><span class="ln">199  </span></a>        self.S[</span><span class="s3">2</span><span class="s1">] = self.T2 
+<a name="l200"><span class="ln">200  </span></a>        self.S[</span><span class="s3">3</span><span class="s1">] = self.T3 
+<a name="l201"><span class="ln">201  </span></a>        self.S[</span><span class="s3">4</span><span class="s1">] = self.T4 
+<a name="l202"><span class="ln">202  </span></a>        self.S[</span><span class="s3">5</span><span class="s1">] = self.T5 
+<a name="l203"><span class="ln">203  </span></a>        self.S[</span><span class="s3">6</span><span class="s1">] = self.L4 
+<a name="l204"><span class="ln">204  </span></a> 
+<a name="l205"><span class="ln">205  </span></a>        self.SN = {} 
+<a name="l206"><span class="ln">206  </span></a>        self.MN = {} 
+<a name="l207"><span class="ln">207  </span></a> 
+<a name="l208"><span class="ln">208  </span></a>        </span><span class="s0">for </span><span class="s1">s </span><span class="s0">in </span><span class="s1">self.S: 
+<a name="l209"><span class="ln">209  </span></a>            self.SN[s] = sim.send_sensor_neuron(sensor_id=self.S[s]) 
+<a name="l210"><span class="ln">210  </span></a> 
+<a name="l211"><span class="ln">211  </span></a>        </span><span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">self.J: 
+<a name="l212"><span class="ln">212  </span></a>            self.MN[j] = sim.send_motor_neuron(joint_id=self.J[j]</span><span class="s0">, </span><span class="s1">tau=</span><span class="s3">1</span><span class="s1">) 
+<a name="l213"><span class="ln">213  </span></a> 
+<a name="l214"><span class="ln">214  </span></a> 
+<a name="l215"><span class="ln">215  </span></a>    </span><span class="s0">def </span><span class="s1">send_synapses(self</span><span class="s0">, </span><span class="s1">sim</span><span class="s0">, </span><span class="s1">wts): 
+<a name="l216"><span class="ln">216  </span></a> 
+<a name="l217"><span class="ln">217  </span></a>        </span><span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">self.SN: 
+<a name="l218"><span class="ln">218  </span></a>            </span><span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">self.MN: 
+<a name="l219"><span class="ln">219  </span></a>                sim.send_synapse(source_neuron_id=self.SN[j]</span><span class="s0">, </span><span class="s1">target_neuron_id=self.MN[i]</span><span class="s0">, </span><span class="s1">weight=wts[j</span><span class="s0">, </span><span class="s1">i]) 
+<a name="l220"><span class="ln">220  </span></a> 
+<a name="l221"><span class="ln">221  </span></a>        </span><span class="s2"># for loop that creates synapses between each sensor neuron and the motor neuron MN2</span><span class="s1"> 
+<a name="l222"><span class="ln">222  </span></a>        </span><span class="s2">#for s in self.sensorNeurons:</span><span class="s1"> 
+<a name="l223"><span class="ln">223  </span></a>         </span><span class="s2">#   for m in self.motorNeurons:</span><span class="s1"> 
+<a name="l224"><span class="ln">224  </span></a>          </span><span class="s2">#      sim.send_synapse(source_neuron_id=self.sensorNeurons[s], target_neuron_id=self.motorNeurons[m], weight=wts[s])</span><span class="s1"> 
+<a name="l225"><span class="ln">225  </span></a> 
+<a name="l226"><span class="ln">226  </span></a> 
+<a name="l227"><span class="ln">227  </span></a></span></pre>
+</body>
+</html>

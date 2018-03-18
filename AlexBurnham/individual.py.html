@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>individual.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(128,128,128); }
+.s3 { color: rgb(104,151,187); }
+.s4 { color: rgb(106,135,89); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+individual.py</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<a name="l1"><span class="ln">1    </span></a><span class="s0">import </span><span class="s1">pyrosim 
+<a name="l2"><span class="ln">2    </span></a></span><span class="s0">from </span><span class="s1">robotThree </span><span class="s0">import </span><span class="s1">ROBOT 
+<a name="l3"><span class="ln">3    </span></a></span><span class="s0">import </span><span class="s1">constants </span><span class="s0">as </span><span class="s1">c 
+<a name="l4"><span class="ln">4    </span></a></span><span class="s0">import </span><span class="s1">random 
+<a name="l5"><span class="ln">5    </span></a></span><span class="s0">import </span><span class="s1">math 
+<a name="l6"><span class="ln">6    </span></a></span><span class="s0">import </span><span class="s1">numpy 
+<a name="l7"><span class="ln">7    </span></a></span><span class="s0">import </span><span class="s1">copy 
+<a name="l8"><span class="ln">8    </span></a> 
+<a name="l9"><span class="ln">9    </span></a></span><span class="s0">class </span><span class="s1">INDIVIDUAL: 
+<a name="l10"><span class="ln">10   </span></a>    </span><span class="s0">def </span><span class="s1">__init__(self</span><span class="s0">, </span><span class="s1">i): 
+<a name="l11"><span class="ln">11   </span></a> 
+<a name="l12"><span class="ln">12   </span></a>        </span><span class="s2"># Robot ID</span><span class="s1"> 
+<a name="l13"><span class="ln">13   </span></a>        self.ID = i 
+<a name="l14"><span class="ln">14   </span></a> 
+<a name="l15"><span class="ln">15   </span></a>        </span><span class="s2"># genome is a vector of random numbers</span><span class="s1"> 
+<a name="l16"><span class="ln">16   </span></a>        self.genome = numpy.random.random((</span><span class="s3">7</span><span class="s0">, </span><span class="s3">12</span><span class="s1">)) * </span><span class="s3">2 </span><span class="s1">- </span><span class="s3">1</span><span class="s1"> 
+<a name="l17"><span class="ln">17   </span></a> 
+<a name="l18"><span class="ln">18   </span></a>        </span><span class="s2"># fitness level (0 at outset)</span><span class="s1"> 
+<a name="l19"><span class="ln">19   </span></a>        self.fitness = </span><span class="s3">0</span><span class="s1"> 
+<a name="l20"><span class="ln">20   </span></a> 
+<a name="l21"><span class="ln">21   </span></a>    </span><span class="s0">def </span><span class="s1">Start_Evaluation(self</span><span class="s0">, </span><span class="s1">env</span><span class="s0">, </span><span class="s1">pp</span><span class="s0">, </span><span class="s1">pb): 
+<a name="l22"><span class="ln">22   </span></a> 
+<a name="l23"><span class="ln">23   </span></a>        </span><span class="s2"># starts simulation</span><span class="s1"> 
+<a name="l24"><span class="ln">24   </span></a>        self.sim = pyrosim.Simulator(play_paused=pp</span><span class="s0">, </span><span class="s1">eval_time=c.evalTime</span><span class="s0">, </span><span class="s1">play_blind=pb) 
+<a name="l25"><span class="ln">25   </span></a> 
+<a name="l26"><span class="ln">26   </span></a>        </span><span class="s2"># call to function ROBOT which generates the scissor robot</span><span class="s1"> 
+<a name="l27"><span class="ln">27   </span></a>        self.robot = ROBOT(self.sim</span><span class="s0">, </span><span class="s1">self.genome) 
+<a name="l28"><span class="ln">28   </span></a> 
+<a name="l29"><span class="ln">29   </span></a>        env.Send_To(self.sim) 
+<a name="l30"><span class="ln">30   </span></a> 
+<a name="l31"><span class="ln">31   </span></a>        </span><span class="s2"># starts simulator</span><span class="s1"> 
+<a name="l32"><span class="ln">32   </span></a>        self.sim.start() 
+<a name="l33"><span class="ln">33   </span></a> 
+<a name="l34"><span class="ln">34   </span></a>    </span><span class="s0">def </span><span class="s1">Compute_Fitness(self): 
+<a name="l35"><span class="ln">35   </span></a> 
+<a name="l36"><span class="ln">36   </span></a>        </span><span class="s2"># tells your code to pause execution here until the simulation finishes running</span><span class="s1"> 
+<a name="l37"><span class="ln">37   </span></a>        self.sim.wait_to_finish() 
+<a name="l38"><span class="ln">38   </span></a> 
+<a name="l39"><span class="ln">39   </span></a>        </span><span class="s2"># get the sensor data from the position sensor (Y-axis)</span><span class="s1"> 
+<a name="l40"><span class="ln">40   </span></a>        sensorData1 = self.sim.get_sensor_data(sensor_id=self.robot.L4</span><span class="s0">, </span><span class="s1">svi=</span><span class="s3">0</span><span class="s1">) 
+<a name="l41"><span class="ln">41   </span></a> 
+<a name="l42"><span class="ln">42   </span></a>        </span><span class="s2"># and print the data</span><span class="s1"> 
+<a name="l43"><span class="ln">43   </span></a>        self.fitness = sensorData1[-</span><span class="s3">1</span><span class="s1">] + self.fitness 
+<a name="l44"><span class="ln">44   </span></a> 
+<a name="l45"><span class="ln">45   </span></a>        </span><span class="s2"># deletes the copy of sim</span><span class="s1"> 
+<a name="l46"><span class="ln">46   </span></a>        </span><span class="s0">del </span><span class="s1">self.sim 
+<a name="l47"><span class="ln">47   </span></a> 
+<a name="l48"><span class="ln">48   </span></a>    </span><span class="s0">def </span><span class="s1">Mutate(self): 
+<a name="l49"><span class="ln">49   </span></a>        </span><span class="s2"># mutatates on of the genes based on a random number from 0 to three</span><span class="s1"> 
+<a name="l50"><span class="ln">50   </span></a>        geneToMutatei = random.randint(</span><span class="s3">0</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) 
+<a name="l51"><span class="ln">51   </span></a>        geneToMutatej = random.randint(</span><span class="s3">0</span><span class="s0">, </span><span class="s3">11</span><span class="s1">) 
+<a name="l52"><span class="ln">52   </span></a>        self.genome[geneToMutatei</span><span class="s0">, </span><span class="s1">geneToMutatej] = random.gauss(self.genome[geneToMutatei</span><span class="s0">, </span><span class="s1">geneToMutatej]</span><span class="s0">, </span><span class="s1">math.fabs(self.genome[geneToMutatei</span><span class="s0">, </span><span class="s1">geneToMutatej])) 
+<a name="l53"><span class="ln">53   </span></a>        </span><span class="s2">#if (self.genome[geneToMutatei][geneToMutatej] &gt; 1):</span><span class="s1"> 
+<a name="l54"><span class="ln">54   </span></a>         </span><span class="s2">#   self.genome[geneToMutatei][geneToMutatej] = 1</span><span class="s1"> 
+<a name="l55"><span class="ln">55   </span></a>        </span><span class="s2">#elif (self.genome[geneToMutatei][geneToMutatej] &lt; -1):</span><span class="s1"> 
+<a name="l56"><span class="ln">56   </span></a>         </span><span class="s2">#   self.genome[geneToMutatei][geneToMutatej] = 1</span><span class="s1"> 
+<a name="l57"><span class="ln">57   </span></a> 
+<a name="l58"><span class="ln">58   </span></a>    </span><span class="s0">def </span><span class="s1">Print(self): 
+<a name="l59"><span class="ln">59   </span></a> 
+<a name="l60"><span class="ln">60   </span></a>        print(</span><span class="s4">'['</span><span class="s0">, </span><span class="s1">end=</span><span class="s4">''</span><span class="s1">) 
+<a name="l61"><span class="ln">61   </span></a> 
+<a name="l62"><span class="ln">62   </span></a>        print(self.ID</span><span class="s0">, </span><span class="s1">end=</span><span class="s4">''</span><span class="s1">) 
+<a name="l63"><span class="ln">63   </span></a> 
+<a name="l64"><span class="ln">64   </span></a>        print(</span><span class="s4">'  '</span><span class="s0">, </span><span class="s1">end=</span><span class="s4">''</span><span class="s1">) 
+<a name="l65"><span class="ln">65   </span></a> 
+<a name="l66"><span class="ln">66   </span></a>        print(self.fitness</span><span class="s0">, </span><span class="s1">end=</span><span class="s4">''</span><span class="s1">) 
+<a name="l67"><span class="ln">67   </span></a> 
+<a name="l68"><span class="ln">68   </span></a>        print(</span><span class="s4">']'</span><span class="s0">, </span><span class="s1">end=</span><span class="s4">''</span><span class="s1">) 
+<a name="l69"><span class="ln">69   </span></a> 
+<a name="l70"><span class="ln">70   </span></a> 
+<a name="l71"><span class="ln">71   </span></a> 
+<a name="l72"><span class="ln">72   </span></a> 
+<a name="l73"><span class="ln">73   </span></a> 
+<a name="l74"><span class="ln">74   </span></a> 
+<a name="l75"><span class="ln">75   </span></a> 
+<a name="l76"><span class="ln">76   </span></a> 
+<a name="l77"><span class="ln">77   </span></a> 
+<a name="l78"><span class="ln">78   </span></a> 
+<a name="l79"><span class="ln">79   </span></a> 
+<a name="l80"><span class="ln">80   </span></a></span></pre>
+</body>
+</html>
