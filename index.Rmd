@@ -17,9 +17,9 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 Here are the links to each weekly hack:
 
 ####6 September 2018 (Gotelli)
-[Viridis color palette](NickGotelli/Viridis.html)
+[Viridis color palette](NickGotelli/ViridisColorPalette.html)
 
-[PowerTestANOVA.R](NickGotelli/Viridis.R)
+[ViridisColorPalette.R](NickGotelli/ViridisColorPalette.R)
 
 
 ####19 March 2018 (Burnham)
