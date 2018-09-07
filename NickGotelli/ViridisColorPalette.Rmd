@@ -1,0 +1,87 @@
+---
+title: "Viridis color palette"
+author: "Nicholas J. Gotelli"
+date: "9/6/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+R has just incorporated the `viridis` palette for heat maps. The advantages are:
+- a continuous blue to yellow scale that renders detail much more clearly than other palettes
+- the viridis palette is visible to those with color blindness
+- the viridis palette translates readily to a well-differentiated grey-scale.
+
+You can read about the details here in this R-bloggers column:
+
+https://www.r-bloggers.com/ggplot2-welcome-viridis/
+
+I will illustrate its power for a heat map applied to a random normal variate. On average, the colors should not change across this heat map, but a good color scale will differentiate fine-scale peaks and valleys in the color landscape.
+
+```{r}
+library(ggplot2)
+library(TeachingDemos)
+char2seed("Ozark")
+
+# first create the data frame
+dFrame <- expand.grid(xVar=1:100,yVar=1:100)
+dFrame$z <- rnorm(10000)
+```
+
+We start by using the default color palette for visualizing the heat map:
+
+```{r}
+p1 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+      geom_tile(aes(fill=z))
+print(p1)
+```
+
+Looks OK, but a bit monochrome. Now with the built-in `viridis` color scale:
+
+```{r}
+
+p2 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+      geom_tile(aes(fill=z)) + 
+scale_fill_viridis_c()
+print(p2)
+```
+
+This makes it much easier to pinpoint the outliers at both extremes. This also looks good converted to a gray scale:
+
+```{r}
+p3 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+      geom_tile(aes(fill=z)) + 
+      scale_fill_viridis_c() +
+  theme_bw() #hmm, why isn't this working?
+print(p3)
+
+```
+
+Finally, there are some options for other scales that will give a more traditional heat map scale, but with the same features as the viridis scale:
+
+```{r}
+p4 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+      geom_tile(aes(fill=z))  
+p4 + scale_fill_viridis_c(option="magma") # "A" option
+p4 + scale_fill_viridis_c(option="inferno") # "B" option
+p4 + scale_fill_viridis_c(option="plasma") # "C" option
+p4 + scale_fill_viridis_c(option="viridis") # "D" (default) option
+p4 + scale_fill_viridis_c(option="cividis") # "E" option
+
+
+
+```
+
+When working with discrete color scales, use the `scale_fill_viridis_d()` function. Like this:
+
+```{r}
+
+p5 <- ggplot(data=mpg,aes(x=cty,y=hwy,color=as.factor(cyl))) +
+geom_point() +
+geom_jitter() +
+scale_color_viridis_d(option="C")
+print(p5)
+```
+
