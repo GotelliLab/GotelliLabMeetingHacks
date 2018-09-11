@@ -16,6 +16,12 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####14 September 2018 (Gotelli)
+[Complex Projects](NickGotelli/ComplexProjects.html)
+
+[ComplexProjects.R](NickGotelli/ComplexProjects.R)
+
+
 ####6 September 2018 (Gotelli)
 [Viridis color palette](NickGotelli/ViridisColorPalette.html)
 
