@@ -48,16 +48,34 @@ scale_fill_viridis_c()
 print(p2)
 ```
 
-This makes it much easier to pinpoint the outliers at both extremes. This also looks good converted to a gray scale:
+This makes it much easier to pinpoint the outliers at both extremes.
 
-```{r}
+Here is some excellent code from Lauren Ash for converting this to a grayscale plot:
+
+```{r, eval=FALSE}
+library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
+library(colorspace) # install.packages("colorspace", repos = "http://R-Forge.R-project.org") --- colorblindr requires the development version
+# this also installs cowplot 
+library(cowplot)
 p3 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
-      geom_tile(aes(fill=z)) + 
-      scale_fill_viridis_c() +
-  theme_bw() #hmm, why isn't this working?
-print(p3)
-
+    geom_tile(aes(fill=z)) + 
+    scale_fill_viridis_c() 
+p3des<-edit_colors(p3, desaturate)
+ggdraw(p3des)
 ```
+
+```{r, echo=FALSE, warning=FALSE, results='hide',message=FALSE}
+library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
+library(colorspace) # install.packages("colorspace", repos = "http://R-Forge.R-project.org") --- colorblindr requires the development version
+# this also installs cowplot 
+library(cowplot)
+p3 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+    geom_tile(aes(fill=z)) + 
+    scale_fill_viridis_c() 
+p3des<-edit_colors(p3, desaturate)
+ggdraw(p3des)
+```
+
 
 Finally, there are some options for other scales that will give a more traditional heat map scale, but with the same features as the viridis scale:
 

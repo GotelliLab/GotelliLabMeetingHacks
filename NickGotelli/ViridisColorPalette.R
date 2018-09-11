@@ -22,13 +22,27 @@ p2 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
 scale_fill_viridis_c()
 print(p2)
 
-## ------------------------------------------------------------------------
-p3 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
-      geom_tile(aes(fill=z)) + 
-      scale_fill_viridis_c() +
-  theme_bw() #hmm, why isn't this working?
-print(p3)
+## ---- eval=FALSE---------------------------------------------------------
+## library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
+## library(colorspace) # install.packages("colorspace", repos = "http://R-Forge.R-project.org") --- colorblindr requires the development version
+## # this also installs cowplot
+## library(cowplot)
+## p3 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+##     geom_tile(aes(fill=z)) +
+##     scale_fill_viridis_c()
+## p3des<-edit_colors(p3, desaturate)
+## ggdraw(p3des)
 
+## ---- echo=FALSE, warning=FALSE, results='hide',message=FALSE------------
+library(colorblindr) # devtools::install_github("clauswilke/colorblindr")
+library(colorspace) # install.packages("colorspace", repos = "http://R-Forge.R-project.org") --- colorblindr requires the development version
+# this also installs cowplot 
+library(cowplot)
+p3 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
+    geom_tile(aes(fill=z)) + 
+    scale_fill_viridis_c() 
+p3des<-edit_colors(p3, desaturate)
+ggdraw(p3des)
 
 ## ------------------------------------------------------------------------
 p4 <- ggplot(data=dFrame,aes(x=xVar,y=yVar)) +
