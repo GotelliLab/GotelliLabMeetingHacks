@@ -47,7 +47,9 @@ Evolutionary robotics: Using a genetic algorithm to evolve synamptic weighs of a
 [Population](AlexBurnham/population.py.html)
 
 ####26 February 2018 (Gotelli)
-[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle](NickGotelli/SeedsNAPuzzle.html)
+[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot for loop](NickGotelli/Seeds_NA_ggPlotLoops.html)
+
+[Seeds_NA_ggPlotLoops.R](NickGotelli/Seeds_NA_ggPlotLoops.R)
 
 ####12 February 2018 (Gotelli)
 [Multi-panel layouts in ggplot](NickGotelli/ggplotPatchwork.html)
