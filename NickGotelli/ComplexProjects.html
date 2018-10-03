@@ -166,7 +166,7 @@ print(&quot;executed..&quot;)
 Sys.sleep(1)
 toc()</code></pre>
 <pre><code>## [1] &quot;executed..&quot;</code></pre>
-<pre><code>## 1 sec elapsed</code></pre>
+<pre><code>## 1.03 sec elapsed</code></pre>
 <p>You can also include messages in <code>tic</code> for timing of multiple steps</p>
 <pre class="r"><code>tic(&quot;Step #1&quot;)
 Sys.sleep(2)
@@ -174,8 +174,8 @@ toc()
 tic(&quot;Step #2&quot;)
 Sys.sleep(3)
 toc()</code></pre>
-<pre><code>## Step #1: 2.02 sec elapsed</code></pre>
-<pre><code>## Step #2: 3.02 sec elapsed</code></pre>
+<pre><code>## Step #1: 2.03 sec elapsed</code></pre>
+<pre><code>## Step #2: 3.03 sec elapsed</code></pre>
 <p>You can even use nested structures (use a separate <code>toc()</code> line for each <code>tic()</code> you include.</p>
 <pre class="r"><code>tic(&quot;outer&quot;)
    Sys.sleep(1)
@@ -186,9 +186,9 @@ toc()</code></pre>
       toc()
       toc()
       toc()</code></pre>
-<pre><code>## inner: 3.04 sec elapsed</code></pre>
-<pre><code>## middle: 5.07 sec elapsed</code></pre>
-<pre><code>## outer: 6.08 sec elapsed</code></pre>
+<pre><code>## inner: 3.01 sec elapsed</code></pre>
+<pre><code>## middle: 5.02 sec elapsed</code></pre>
+<pre><code>## outer: 6.04 sec elapsed</code></pre>
 <p>In the help section, you can also set up a logfile with this information.</p>
 <div id="displaying-a-progress-bar-in-the-console-with-txtprogressbar" class="section level3">
 <h3>Displaying a progress bar in the console with <code>txtProgressBar</code></h3>
