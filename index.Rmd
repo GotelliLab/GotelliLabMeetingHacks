@@ -16,6 +16,9 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####04 October 2018 (Gotelli)
+[Long-Wide Formatting Puzzle](NickGotelli/LongWideFormat.html)
+
 ####14 September 2018 (Gotelli)
 [Complex Projects](NickGotelli/ComplexProjects.html)
 
