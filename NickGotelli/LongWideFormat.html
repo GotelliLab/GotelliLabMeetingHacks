@@ -186,6 +186,38 @@ SpeciesD Site4</code></pre>
 <p>In this way, there would be a row for each individual collected in the study, with columns indicating the species identity and the site. You could then add the other columns of information you collect on these individuals.</p>
 <p>But how can we do this using <code>dplyr</code> or any other tools? Yes, I could hack my way to this by stripping out 0 rows, and then copying and binding rows multiple times, but that seems ugly.</p>
 <p>Any ideas??</p>
+<p>Here is a first try:</p>
+<pre class="r"><code># first set up an empty data frame with no rows
+specimenData &lt;- data.frame(ID=numeric(),Species=character(),Site=character(),stringsAsFactors=FALSE)
+str(specimenData)</code></pre>
+<pre><code>## 'data.frame':    0 obs. of  3 variables:
+##  $ ID     : num 
+##  $ Species: chr 
+##  $ Site   : chr</code></pre>
+<pre class="r"><code>rowNum &lt;- 1
+
+for(i in seq_len(nrow(longDat))) {
+ for(j in seq_len(longDat$Abundance[i])) {
+ specimenData &lt;- rbind(specimenData,list(
+                       ID=rowNum,
+                       Species=longDat$Species[i],
+                       Site=longDat$Site[i]))
+ rowNum &lt;- rowNum + 1
+ }
+}
+
+print(specimenData)</code></pre>
+<pre><code>##    ID  Species  Site
+## 1   1 SpeciesA Site1
+## 2   2     &lt;NA&gt; Site1
+## 3   3     &lt;NA&gt; Site1
+## 4   4     &lt;NA&gt; Site1
+## 5   5     &lt;NA&gt;  &lt;NA&gt;
+## 6   6     &lt;NA&gt;  &lt;NA&gt;
+## 7   7     &lt;NA&gt;  &lt;NA&gt;
+## 8   8 SpeciesA  &lt;NA&gt;
+## 9   9 SpeciesA  &lt;NA&gt;
+## 10 10     &lt;NA&gt;  &lt;NA&gt;</code></pre>
 
 
 
