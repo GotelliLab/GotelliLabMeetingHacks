@@ -189,12 +189,7 @@ SpeciesD Site4</code></pre>
 <p>Here is a first try:</p>
 <pre class="r"><code># first set up an empty data frame with no rows
 specimenData &lt;- data.frame(ID=numeric(),Species=character(),Site=character(),stringsAsFactors=FALSE)
-str(specimenData)</code></pre>
-<pre><code>## 'data.frame':    0 obs. of  3 variables:
-##  $ ID     : num 
-##  $ Species: chr 
-##  $ Site   : chr</code></pre>
-<pre class="r"><code>rowNum &lt;- 1
+rowNum &lt;- 1
 
 for(i in seq_len(nrow(longDat))) {
  for(j in seq_len(longDat$Abundance[i])) {

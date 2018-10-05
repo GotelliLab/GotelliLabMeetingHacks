@@ -63,7 +63,6 @@ Here is a first try:
 ```{r}
 # first set up an empty data frame with no rows
 specimenData <- data.frame(ID=numeric(),Species=character(),Site=character(),stringsAsFactors=FALSE)
-str(specimenData)
 rowNum <- 1
 
 for(i in seq_len(nrow(longDat))) {
