@@ -16,6 +16,11 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####12 October 2018 (Gotelli)
+[Neural Networks](NickGotelli/NeuralNetworks.html)
+
+[NeuralNetworks.R](NickGotelli/NeuralNetworks.R)
+
 ####04 October 2018 (Gotelli)
 [Long-Wide Formatting Puzzle](NickGotelli/LongWideFormat.html)
 
