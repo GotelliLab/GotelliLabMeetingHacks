@@ -16,6 +16,11 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
+####26 October 2018 (Gotelli et al)
+
+[Neural Networks](AlexBurnham/CompBiolMS_Burnham.html)
+
+
 ####12 October 2018 (Gotelli)
 [Neural Networks](NickGotelli/NeuralNetworks.html)
 
