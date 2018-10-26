@@ -1,7 +1,7 @@
 ---
 title: "Gotelli Lab Meeting Hacks"
-author: "Nick Gotelli"
-date: "September 10, 2017"
+author: "Nick Gotelli et al."
+date: ""
 output: 
   html_document: 
     highlight: tango
@@ -15,6 +15,26 @@ knitr::opts_chunk$set(echo = TRUE)
 Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of us presents a brief, useful computational hack for some useful tool in statistics or graphics.
 
 Here are the links to each weekly hack:
+
+####12 October 2018 (Gotelli)
+[Neural Networks](NickGotelli/NeuralNetworks.html)
+
+[NeuralNetworks.R](NickGotelli/NeuralNetworks.R)
+
+####04 October 2018 (Gotelli)
+[Long-Wide Formatting Puzzle](NickGotelli/LongWideFormat.html)
+
+####14 September 2018 (Gotelli)
+[Complex Projects](NickGotelli/ComplexProjects.html)
+
+[ComplexProjects.R](NickGotelli/ComplexProjects.R)
+
+
+####6 September 2018 (Gotelli)
+[Viridis color palette](NickGotelli/ViridisColorPalette.html)
+
+[ViridisColorPalette.R](NickGotelli/ViridisColorPalette.R)
+
 
 ####19 March 2018 (Burnham)
 Evolutionary robotics: Using a genetic algorithm to evolve synamptic weighs of an Artificial Neural Network to examine how robot morphology and complexity affect the evolutionary timeline.
@@ -35,7 +55,9 @@ Evolutionary robotics: Using a genetic algorithm to evolve synamptic weighs of a
 [Population](AlexBurnham/population.py.html)
 
 ####26 February 2018 (Gotelli)
-[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle](NickGotelli/SeedsNAPuzzle.html)
+[Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot for loop](NickGotelli/Seeds_NA_ggPlotLoops.html)
+
+[Seeds_NA_ggPlotLoops.R](NickGotelli/Seeds_NA_ggPlotLoops.R)
 
 ####12 February 2018 (Gotelli)
 [Multi-panel layouts in ggplot](NickGotelli/ggplotPatchwork.html)
@@ -69,7 +91,6 @@ Evolutionary robotics: Using a genetic algorithm to evolve synamptic weighs of a
 [Power test for one-way ANOVA with artificial data](NickGotelli/PowerTestANOVA.html)
 
 [PowerTestANOVA.R](NickGotelli/PowerTestANOVA.R)
-
 
 
 

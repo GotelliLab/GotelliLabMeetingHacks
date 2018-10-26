@@ -1,5 +1,5 @@
 ---
-title: "Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot puzzle"
+title: "Setting random number seeds with character strings, stripping NA values from data frames, and a ggplot for loop"
 author: "Nick Gotelli"
 date: "February 26, 2018"
 output: html_document
@@ -69,10 +69,9 @@ cleanFrame <- dirtyFrame[complete.cases(dirtyFrame[,(5:6)]),]
 These same operations can be carried out in dplyr and other packages, but the `complete.cases` function is in base R and is concise and fast. Use it!
 
 
-### A mysterious ggplot puzzle
+### A ggplot for loop
 
-I was trying to write some code to cycle through a for loop, create a ggplot graph, and then save the graph as a list item in a vector of lists. Then I could later assemble them in `patchwork`. It all works fine, but it seems to save only the final plot in all of the slots once they are created! Any ideas would be welcome. 
-
+I was trying to write some code to cycle through a for loop, create a ggplot graph, and then save the graph as a list item in a vector of lists. Then I could later assemble them in `patchwork`. It all works fine, but it seems to save only the final plot in all of the slots once they are created! Lauren Ash dug up a solution from [Stack Overflow](https://stackoverflow.com/questions/31993704/storing-ggplot-objects-in-a-list-from-within-loop-in-r)
 ```{r, message=FALSE}
 
 # Using a vector of lists to store ggplot objects in a loop
@@ -83,25 +82,16 @@ n <- 3 # number of plots to create
 plotList <- vector("list",n) # taken from a StackOverflow answer from Venables
 # Now run a little for loop to create, plot, and store 3 replicates
 for(i in seq(plotList)) {
+  local({                     # special call to local
+       i <- i                 # special re-assignment of counter 
   z <- rnorm(100)
-  print(head(z)) # confirm that a different set of values is crated for z
-  print(i)       # confirm that the counter is incrementing
-  plotList[[i]] <- qplot(x=z,color=I("black"),fill=I("goldenrod"))
-  print(plotList[[i]]) # this works fine to print each plot from the list 
-# as it is created
+  plotList[[i]] <<- qplot(x=z,color=I("black"),fill=I("goldenrod"))
+  }) # note global assign <<- and environment closure })
 }
 
-# But outside of the loop, now it is using and plotting only the
-# final data set for all 3 plots!!
-print(plotList[[1]])
-print(plotList[[2]])
-print(plotList[[3]])
 
-# same problem when we do this in patchwork
+# now plot these with patchwork
 plotList[[1]] | plotList[[2]] | plotList[[3]]
 
-# so the loop is working fine and each plot appears to be stored and 
-# retrieved from the vector of lists,
-# but outside of the loop, all of the elements are yielding the same data
 ```
 

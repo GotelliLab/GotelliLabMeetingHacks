@@ -1,0 +1,158 @@
+---
+title: "Useful Tools for Complex Projects and Slow Code"
+author: "Nick Gotelli"
+date: "September 14, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here are some methods that are useful when you are working on complex projects and have code that can take a long time to run (such as stochastic simulations with many replicates)
+
+### Relative path references within a project directory
+
+In a simple R project, the script and data files all live in the root of the project, so you can simply name files directly:
+
+```{r, eval=FALSE}
+read.table("filename.csv")
+write.table("output.csv")
+```
+
+However, in a complex project, you will often have subfolders, perhaps with different levels. To get to these subfolders, you can use `getwd()` to show the current directory, and `setwd(dir)` to change the working directory. However, `getwd()` will give you the full absolute path, which is not what you want. All paths inside your project should be relative paths, so that the code works regardless of where (or on whose computer) the project directory is placed.
+
+To give a path for any folder that is *beneath* the current working directory do it this way:
+
+```{r, eval=FALSE}
+read.table("pathname/filename")
+read.table("folder1/filename") # go down into folder1 
+read.table("folder1/subfolderB/filename") # go down 2 levels to subfolderB
+```
+
+To give a path for any folder that is *above* the current working directory, do it this way:
+
+```{r, eval=FALSE}
+read.table("../filename") # this moves up one level
+read.table("../../filename") # this moves up two levels
+read.table("../../folderC/filename") # this moves up 2 levels and then into folderC
+```
+
+These relative paths can be used either for read or write statements. The statements should all be arranged relative to the root of the project directory, because this is where the working directory is when  you open a project. In this way, the code will always work no matter where the project directory is moved to.
+
+### Creating and opening `RDS` objects
+
+Sometimes it is important to create intermediate data structures so that we don't have to repeat code or run long programs repeatedly. This is often the case with a data frame that might be created from a program that takes a long time to run. When we are ready to start graphing the results of the model, we do not want to have to run it every time in order to use the the final data frame. We could create multiple `.csv` files and save them to disk, but this really clutters up the repository, and some of these may be slow cumbersome to load.
+
+The solution is to use `saveRDS()`. This command will take any single R object and save it to a file as a compressed binary, which loads very quickly. It can then be opened with `readRDS()`. For example:
+
+```{r eval=TRUE}
+z <- runif(10000)
+saveRDS(z,"myRandomVariates")
+y <- readRDS("myRandomVariates")
+identical(z,y)
+
+```
+
+`save` and `load` are similar, but they only work within an environment and cannot be used to restore an object under a different name. Note that `saveRDS()` and `readRDS` only refer to single data objects (which could be lists or data frames). To save the entire workspace, use `save.image()`.
+
+## Recording elapsed time with `tictoc`
+
+For long simulations, it is important to estimate precisely how much time they will take to run. Insert the `tic()` and `toc()` commands anywhere in your code. When `toc()` executes, it will print the elapsed time to the console
+
+```{r, eval=FALSE}
+library(tictoc)
+tic()
+print("executed..")
+Sys.sleep(1)
+toc()
+```
+
+```{r, echo=FALSE}
+library(tictoc)
+tic()
+print("executed..")
+Sys.sleep(1)
+toc()
+```
+You can also include messages in `tic` for timing of multiple steps
+
+```{r, eval=FALSE}
+tic("Step #1")
+Sys.sleep(2)
+toc()
+tic("Step #2")
+Sys.sleep(3)
+toc()
+```
+
+```{r, echo=FALSE}
+tic("Step #1")
+Sys.sleep(2)
+toc()
+tic("Step #2")
+Sys.sleep(3)
+toc()
+```
+
+You can even use nested structures (use a separate `toc()` line for each `tic()` you include.
+```{r, eval=FALSE}
+
+tic("outer")
+   Sys.sleep(1)
+   tic("middle")
+      Sys.sleep(2)
+      tic("inner")
+         Sys.sleep(3)
+      toc()
+      toc()
+      toc()
+```
+
+```{r, echo=FALSE}
+
+tic("outer")
+   Sys.sleep(1)
+   tic("middle")
+      Sys.sleep(2)
+      tic("inner")
+         Sys.sleep(3)
+      toc()
+      toc()
+      toc()
+```
+
+In the help section, you can also set up a logfile with this information.
+
+### Displaying a progress bar in the console with `txtProgressBar`
+Once a simulation or for loop starts, it is very nice to have a progress bar so you can make sure things are moving along as they should.
+
+```{r, warning=FALSE, results='hide',message='hide', eval=FALSE}
+library(R.utils)
+total <- 20
+# create progress bar
+pb <- txtProgressBar(min = 0, max = total, style = 3,char=".")
+for(i in 1:total){
+   Sys.sleep(0.1)
+   if(i %% 5 ==0) print("print to console")
+   # update progress bar
+   setTxtProgressBar(pb, i)
+}
+close(pb)
+```
+
+```{r, warning=FALSE, message='hide',echo=FALSE}
+total <- 20
+# create progress bar
+pb <- txtProgressBar(min = 0, max = total, style = 3,char=".")
+for(i in 1:total){
+   Sys.sleep(0.1)
+   if(i %% 5 ==0) print("print to console")
+   # update progress bar
+   setTxtProgressBar(pb, i)
+}
+close(pb)
+```
+
+This looks ugly in print, but is just fine when outputting to the console. Styles 2 and 3 are best if you want to print something to the console during execution. Style 3 also gives a % completion, which is useful. 
+

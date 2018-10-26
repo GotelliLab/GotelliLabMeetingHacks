@@ -1,0 +1,80 @@
+---
+title: "Long-Wide Formatting Puzzle"
+author: "Nicholas J. Gotelli"
+date: "10/4/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+Here is a very typical data format for community ecologists: a matrix with rows= species, columns= sites, and entries = abundances:
+
+```{r}
+comDat <- tribble(
+  ~Species, ~Site1, ~Site2, ~Site3, ~Site4,
+  #----------------------------------------
+  "SpeciesA", 1,0,0,2,
+  "SpeciesB", 3,0,0,0,
+  "SpeciesC", 0,2,1,0,
+  "SpeciesD", 0,0,0,1
+  #----------------------------------------
+)
+  print(comDat)
+```
+Using `dplyr` or the older `melt` and `recast` functions, we can convert this to the long format:
+
+```{r}
+longDat <- comDat %>%
+  gather(Site1:Site4, key="Site",value="Abundance")
+print(longDat)
+```
+
+That's fine, and it is the transformation you need if you want to start grouping and summarizing by species or by site. 
+
+But suppose you want to set this up as a tibble to add data columns that give information for each individual organism? Examples might be sequence data or measures of body mass or other individual traits. In this case, we would like the data to look like this:
+
+```
+Species Site
+SpeciesA Site1
+SpeciesB Site1
+SpeciesB Site1
+SpeciesB Site1
+SpeciesC Site2
+SpeciesC Site2
+SpeciesC Site3
+SpeciesA Site4
+SpeciesA Site4
+SpeciesD Site4
+```
+In this way, there would be a row for each individual collected in the study, with columns indicating the species identity and the site. You could then add the other columns of information you collect on these individuals.
+
+But how can we do this using `dplyr` or any other tools? Yes, I could hack my way to this by stripping out 0 rows, and then copying and binding rows multiple times, but that seems ugly.
+
+Any ideas??
+
+Here is a first try:
+
+```{r}
+# first set up an empty data frame with no rows
+specimenData <- data.frame(ID=numeric(),Species=character(),Site=character(),stringsAsFactors=FALSE)
+rowNum <- 1
+
+for(i in seq_len(nrow(longDat))) {
+ for(j in seq_len(longDat$Abundance[i])) {
+ specimenData <- rbind(specimenData,list(
+                       ID=rowNum,
+                       Species=longDat$Species[i],
+                       Site=longDat$Site[i]))
+ rowNum <- rowNum + 1
+ }
+}
+
+print(specimenData)
+```
+
