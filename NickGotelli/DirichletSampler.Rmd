@@ -1,0 +1,140 @@
+---
+title: "Using a Dirichlet distribution for uncertainty wtih count data"
+author: "Nick Gotelli"
+date: "November 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning=FALSE)
+```
+```{r}
+library(ggplot2)
+library(popbio)
+library(gtools)
+```
+
+## Sampling uncertainty for binomial count data
+
+When we have a set of Bernouli trials with a yes/no answer, we typically estimate the probability of success with the standard frequentist estimate:
+
+$$p(success) = n_s/N$$
+
+
+With that estimate in hand, we can simulate a binomial distribution to generate the distribution of successes for a given number of trials. 
+
+But a more useful analysis is based on the `beta()` distribution, which estimates the underlying p values given a set of data for successes and failures. For example, using the beta distribution with 1 success and 5 failures, we have:
+
+```{r}
+Success <- 1
+Failure <- 5
+
+# the beta needs shape1 and shape2, which represent the number of successes + 1 and the number of failures + 1
+
+betaSim1 <- rbeta(n=10000,shape1=Success+1,shape2=Failure+1)
+qplot(x=betaSim1,color=I("black"),fill=I("goldenrod"),xlim=c(0,1))
+```
+It seems intuitive that if we have a larger sample size of trials, our estimate of the probability will be more precise:
+
+```{r}
+Success <- 10
+Failure <- 50
+
+# the beta needs shape1 and shape2, which represent the number of successes + 1 and the number of failures + 1
+
+betaSim1 <- rbeta(n=10000,shape1=Success+1,shape2=Failure+1)
+qplot(x=betaSim1,color=I("black"),fill=I("goldenrod"),xlim=c(0,1))
+```
+
+## Sampling uncertainty for the multinomial distribution- meet the Dirichlet
+
+The Dirichlet distribution behaves the same way, but it is for a multinomial process, where there are multiple possible outcomes, not just the binary response that we are used to with the Binomial distribution.
+
+## Dirichlet sampling function
+
+Here is a simple function that uses the Dirichlet sampler to generate a matrix of transition probabilities:
+```{r}
+##################################################
+# function: dirichletSampler
+# Creates transition matrix with sampling uncertainty
+# input: matrix of raw transition counts
+# output: matrix of transition probabilities sampled from a Dirichlet for each column
+# note: add 1 to each matrix element for proper interpretation
+# of rdirichlet paramaters as param = number of successes + 1
+#------------------------------------------------- 
+dirichletSampler <- function(m=matrix(rpois(n=16,lambda=5),nrow=4)) {
+  z <- apply(m+1,2,rdirichlet,n=1) 
+  
+  return(list(data=m,trans=z))
+}
+#------------------------------------------------- 
+dirichletSampler() # sample output of a transition matrix
+```
+So, the input is a matrix of counts (data), and the output is a matrix of transition probabilities (trans) for a single sampling iteration.
+
+## Transition matrices for forest ants
+
+Here is an example from our work on ant occurrences in nestboxes at Harvard and Duke Forest. The data consist of a transition matrix in which we record the identity of the species occupying the next box in one month (time t) and the next month (time t + 1). These data can be organized into a square transition matrix:
+
+```{r}
+
+stages <- c("Empty",paste("Species",LETTERS[1:3]))
+# use the Duke Forest heated chamber counts
+A <- matrix(c(245,14,8,0,
+              18,17,0,2,
+              8,1,0,5,
+              1,0,0,1) ,nrow=length(stages),byrow=TRUE,dimnames=list(stages,stages)) 
+
+print(A)
+```
+
+
+For this matrix of raw counts, we divide by column totals for a simple frequentist estimate of transition probabilities:
+
+```{r}
+scaledA <- apply(A,2, function(x) x/sum(x)) 
+print(scaledA)
+```
+
+## Damping ratio as a stability measure for a transition matrix
+
+Finally, using the `popbio()` package, we calculate the damping ratio from this matrix, which is a measure of neighborhood stability (the velocity of return time to equilibrium following a small perturbation):
+
+```{r}
+
+damping.ratio(scaledA)
+```
+
+## Damping ratios with sampling uncertainty
+
+But with sampling uncertainty, we could just as likely have this set of transition probabilities:
+
+```{r}
+sampleMatrix <- dirichletSampler(A)
+print(sampleMatrix)
+```
+Note in particular how different the sample estimates are for the Species B column compared to the frequentist estimate.
+
+And the damping ratio would be:
+
+```{r}
+damping.ratio(sampleMatrix$trans)
+```
+## Repeated sampling
+
+Now, let's repeat this process to generate a distribution of damping values based on samples from the dirichlet:
+
+```{r}
+
+simDat <- replicate(1000,damping.ratio(dirichletSampler(A)$trans))
+qplot(x=simDat,col=I("black"),fill=I("goldenrod")) +
+  geom_vline(xintercept=damping.ratio(scaledA),color="red",size=1.3) +
+  geom_vline(xintercept=quantile(simDat,probs=c(0.025,0.975)),linetype="dashed")
+
+```
+
+## Conclusion
+
+If you ever have count data that represent a multinomial sampling process, the Dirichlet distribution is an effective way to generate variation in probabilities that reflects the uncertainty in your samples. The smaller your number of counts, the greater your uncertainty in the frequentist estimate of the probability.
+
+

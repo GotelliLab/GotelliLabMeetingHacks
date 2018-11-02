@@ -16,7 +16,12 @@ Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of
 
 Here are the links to each weekly hack:
 
-####26 October 2018 (Gotelli et al)
+####2 November 2018 (Gotelli)
+[Dirichlet Sampler](NickGotelli/DirichletSampler.html)
+
+[Dirichlet Sampler.R](NickGotelli/DirichletSampler.R)
+
+####26 October 2018 (Burnham)
 
 [Burnham Course Recomendations](AlexBurnham/CompBiolMS_Burnham.html)
 
