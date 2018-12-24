@@ -37,10 +37,24 @@ scatter1 <- ggplot(mpg, aes(x=cty, y=hwy)) +
        title="Scatterplot", 
        caption = "Source: R-data") +
   theme_bw(base_size=20,base_family="serif") 
-  
+```  
+### Scatterplot (toy example)
 
+```{r}
 plot(scatter1)
 
+# toy example
+xVar <- rnorm(100)
+yVar <- xVar + 0.2*rnorm(100)
+tData1 <-data.frame(xVar=xVar,yVar=yVar)
+
+library(ggplot2)
+
+tscatter1 <- ggplot(tData1,aes(x=xVar,y=yVar)) +
+                      geom_point() +
+                      geom_smooth(method="lm",se=FALSE)
+plot(tscatter1)
+                    
 ```
 
 ## Scatterplot with encircling
@@ -78,6 +92,31 @@ plot(scatter2)
 
 ```
 
+### Scatterplot with encircling (toy example)
+
+```{r}
+
+# toy example
+xVar <- rnorm(100)
+yVar <- xVar + 0.2*rnorm(100)
+tData2 <-data.frame(xVar=xVar,yVar=yVar)
+tsubData2 <- tData2[tData2$xVar > 1 & tData2$yVar > 1,]
+
+library(ggplot2)
+library(ggalt)
+
+tscatter2 <- ggplot(tData2,aes(x=xVar,y=yVar)) +
+                      geom_point() +
+                      geom_smooth(method="lm",se=FALSE) +
+             geom_encircle(data=tsubData2,
+                           aes(x=xVar,y=yVar),
+                           color="red",
+                           size=2,
+                           expand=0.03)
+plot(tscatter2)
+                    
+```
+
 ## Jitter plot
 ```{r}
 # Jitter plot
@@ -103,6 +142,30 @@ plot(scatter3)
 
 ```
 
+## Jitter plot (toy example)
+```{r}
+# Jitter plot
+
+library(ggplot2)
+
+xVar <- rnorm(100)
+yVar <- xVar + 0.5*rnorm(100)
+xVar <- round(xVar)
+yVar <- round (yVar)
+tData3 <- data.frame(xVar=xVar,yVar=yVar)
+
+
+tscatter3a <- ggplot(tData3, aes(x=xVar, y=yVar)) +
+  geom_point() +
+  geom_smooth(method="loess",se=FALSE,col="red")   
+plot(tscatter3a)
+
+tscatter3b <- ggplot(tData3, aes(x=xVar, y=yVar)) +
+  geom_jitter(width=0.1, height=1, size=1) +
+  geom_smooth(method="loess",se=FALSE,col="red")   
+plot(tscatter3b)
+
+```
 ## Counts chart
 
 ```{r}
