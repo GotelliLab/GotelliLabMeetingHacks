@@ -149,6 +149,29 @@ scatter5 <- ggplot(mpg_select, aes(x=displ, y=cty)) +
   
 
 plot(scatter5)
-
-
 ```
+
+## Scatter plot with marginal distributions
+
+```{r}
+library(ggplot2)
+library(ggExtra)
+xVar <- runif(30)
+yVar <- xVar + 0.5*runif(30)
+sData <- data.frame(xVar,yVar)
+
+scatter7 <- ggplot(sData,aes(x=xVar,y=yVar)) +
+  geom_point() + 
+  geom_smooth(method="lm",se=FALSE) +
+  theme_bw() 
+
+ggMarginal(sData, type = "histogram", fill="transparent")
+ggMarginal(sData, type = "boxplot", fill="transparent")
+ggMarginal(sData, type = "density", fill="transparent")
+
+
+
+plot(scatter7)
+  
+```
+
