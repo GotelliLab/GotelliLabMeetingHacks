@@ -23,7 +23,6 @@ To make the examples self-contained, all library calls occur within each example
 ```{r}
 # Scatterplot
 
-options(scipen=999)  # turn-off scientific notation like 1e+48
 library(ggplot2)
 
 scatter1 <- ggplot(mpg, aes(x=cty, y=hwy)) +
@@ -36,7 +35,7 @@ scatter1 <- ggplot(mpg, aes(x=cty, y=hwy)) +
        x="Highway Mileage (mpg)", 
        title="Scatterplot", 
        caption = "Source: R-data") +
-  theme_bw(base_size=20,base_family="serif") 
+  theme_bw() 
   
 
 plot(scatter1)
@@ -48,8 +47,7 @@ plot(scatter1)
 ```{r}
 
 # Scatterplot with encircling
-options(scipen=999)  # turn-off scientific notation like 1e+48
-
+# devtools::install_github("hrbrmstr/ggalt")
 library(ggplot2)
 library(ggalt)
 
@@ -65,7 +63,7 @@ scatter2 <- ggplot(mpg, aes(x=cty, y=hwy)) +
        x="Highway Mileage (mpg)", 
        title="Scatterplot with encircling", 
        caption = "Source: R-data") +
-  theme_bw(base_size=20,base_family="serif") +
+  theme_bw() +
   
   geom_encircle(data=mpgGrp,
                 aes(x=cty,y=hwy),
@@ -82,7 +80,6 @@ plot(scatter2)
 ```{r}
 # Jitter plot
 
-options(scipen=999)  # turn-off scientific notation like 1e+48
 library(ggplot2)
 
 scatter3 <- ggplot(mpg, aes(x=cty, y=hwy)) +
@@ -96,7 +93,7 @@ scatter3 <- ggplot(mpg, aes(x=cty, y=hwy)) +
        x="Highway Mileage (mpg)", 
        title="Scatterplot with jittering", 
        caption = "Source: R-data") +
-  theme_bw(base_size=20,base_family="serif") 
+  theme_bw() 
   
 
 plot(scatter3)
@@ -106,7 +103,6 @@ plot(scatter3)
 ## Counts chart
 
 ```{r}
-options(scipen=999)  # turn-off scientific notation like 1e+48
 library(ggplot2)
 
 scatter4 <- ggplot(mpg, aes(x=cty, y=hwy)) +
@@ -120,7 +116,7 @@ scatter4 <- ggplot(mpg, aes(x=cty, y=hwy)) +
        x="Highway Mileage (mpg)", 
        title="Scatterplot with count overlay", 
        caption = "Source: R-data") +
-  theme_bw(base_size=20,base_family="serif") 
+  theme_bw() 
   
 
 plot(scatter4)
@@ -132,7 +128,6 @@ plot(scatter4)
 ## Bubble plot
 
 ```{r}
-options(scipen=999)  # turn-off scientific notation like 1e+48
 library(ggplot2)
 
 mpg_select <- mpg[mpg$manufacturer %in% c("audi", "ford", "honda", "hyundai"), ]
@@ -145,7 +140,7 @@ scatter5 <- ggplot(mpg_select, aes(x=displ, y=cty)) +
        x="Highway Mileage (mpg)", 
        title="Bubble plot with highway as point size", 
        caption = "Source: R-data") +
-  theme_bw(base_size=20,base_family="serif") 
+  theme_bw() 
   
 
 plot(scatter5)
@@ -168,10 +163,32 @@ scatter6 <- ggplot(sData,aes(x=xVar,y=yVar)) +
 ggMarginal(p=scatter6, type = "histogram", fill="thistle")
 # ggMarginal(p=scatter6, type = "boxplot", fill="khaki")
 # ggMarginal(p=scatter6, type = "density", fill="tomato")
-#ggMarginal(p=scatter6, type = "violin", fill="tomato")
+# ggMarginal(p=scatter6, type = "violin", fill="wheat")
 
 
 
   
+```
+
+## Correlogram
+
+```{r}
+# devtools::install_github("kassambara/ggcorrplot")
+library(ggplot2)
+library(ggcorrplot)
+
+# Correlation matrix
+data(mtcars)
+corr <- round(cor(mtcars), 1)
+
+# Plot
+ggcorrplot(corr, hc.order = TRUE, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3, 
+           method="circle", 
+           colors = c("tomato2", "white", "springgreen3"), 
+           title="Correlogram of mtcars", 
+           ggtheme=theme_bw)
 ```
 
