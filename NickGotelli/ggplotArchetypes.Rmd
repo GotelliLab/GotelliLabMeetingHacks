@@ -138,8 +138,8 @@ library(ggplot2)
 mpg_select <- mpg[mpg$manufacturer %in% c("audi", "ford", "honda", "hyundai"), ]
 
 scatter5 <- ggplot(mpg_select, aes(x=displ, y=cty)) +
-  geom_jitter(aes(col=manufacturer,size=hwy)) +
   geom_smooth(aes(col=manufacturer),method="lm",se=FALSE) +  
+  geom_jitter(aes(col=manufacturer,size=hwy)) +
   labs(subtitle="Highway Mileage vs Displacement", 
        y="City Mileage (mpg)", 
        x="Highway Mileage (mpg)", 
@@ -156,22 +156,22 @@ plot(scatter5)
 ```{r}
 library(ggplot2)
 library(ggExtra)
-xVar <- runif(30)
-yVar <- xVar + 0.5*runif(30)
+xVar <- rnorm(300)
+yVar <- xVar + 0.5*rnorm(300)
 sData <- data.frame(xVar,yVar)
 
-scatter7 <- ggplot(sData,aes(x=xVar,y=yVar)) +
+scatter6 <- ggplot(sData,aes(x=xVar,y=yVar)) +
   geom_point() + 
   geom_smooth(method="lm",se=FALSE) +
-  theme_bw() 
+  theme_bw()  
 
-ggMarginal(sData, type = "histogram", fill="transparent")
-ggMarginal(sData, type = "boxplot", fill="transparent")
-ggMarginal(sData, type = "density", fill="transparent")
+ggMarginal(p=scatter6, type = "histogram", fill="thistle")
+# ggMarginal(p=scatter6, type = "boxplot", fill="khaki")
+# ggMarginal(p=scatter6, type = "density", fill="tomato")
+#ggMarginal(p=scatter6, type = "violin", fill="tomato")
 
 
 
-plot(scatter7)
   
 ```
 
