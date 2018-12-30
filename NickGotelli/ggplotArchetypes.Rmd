@@ -192,3 +192,95 @@ ggcorrplot(corr, hc.order = TRUE,
            ggtheme=theme_bw)
 ```
 
+# Deviation
+
+## Diverging bars
+
+```{r}
+library(ggplot2)
+
+# Data Prep
+data("mtcars")  # load data
+mtcars$`car name` <- rownames(mtcars)  # create new column for car names
+mtcars$mpg_z <- round((mtcars$mpg - mean(mtcars$mpg))/sd(mtcars$mpg), 2)  # compute normalized mpg
+mtcars$mpg_type <- ifelse(mtcars$mpg_z < 0, "below", "above")  # above / below avg flag
+mtcars <- mtcars[order(mtcars$mpg_z), ]  # sort
+mtcars$`car name` <- factor(mtcars$`car name`, levels = mtcars$`car name`)  # convert to factor to retain sorted order in plot.
+
+# Diverging Barcharts
+ggplot(mtcars, aes(x=`car name`, y=mpg_z, label=mpg_z)) + 
+  geom_bar(stat='identity', aes(fill=mpg_type), width=.5)  +
+  scale_fill_manual(name="Mileage", 
+                    labels = c("Above Average", "Below Average"), 
+                    values = c("above"="#00ba38", "below"="#f8766d")) + 
+  labs(subtitle="Normalised mileage from 'mtcars'", 
+       title= "Diverging Bars") +
+  
+  coord_flip() +
+  theme_bw()
+```
+
+## Diverging lollipop chart
+
+```{r}
+library(ggplot2)
+
+ggplot(mtcars, aes(x=`car name`, y=mpg_z, label=mpg_z)) + 
+  geom_point(stat='identity', fill="black", size=6)  +
+  geom_segment(aes(y = 0, 
+                   x = `car name`, 
+                   yend = mpg_z, 
+                   xend = `car name`), 
+               color = "black") +
+  geom_text(color="white", size=2) +
+  labs(title="Diverging Lollipop Chart", 
+       subtitle="Normalized mileage from 'mtcars': Lollipop") + 
+  ylim(-2.5, 2.5) +
+  coord_flip() +
+  theme_bw()
+```
+
+## Diverging dot plot
+
+```{r}
+library(ggplot2)
+
+# Plot
+ggplot(mtcars, aes(x=`car name`, y=mpg_z, label=mpg_z)) + 
+  geom_point(stat='identity', aes(col=mpg_type), size=6)  +
+  scale_color_manual(name="Mileage", 
+                     labels = c("Above Average", "Below Average"), 
+                     values = c("above"="#00ba38", "below"="#f8766d")) + 
+  geom_text(color="white", size=2) +
+  labs(title="Diverging Dot Plot", 
+       subtitle="Normalized mileage from 'mtcars': Dotplot") + 
+  ylim(-2.5, 2.5) +
+  coord_flip() +
+  theme_bw()
+```
+
+## Area chart
+
+```{r}
+library(ggplot2)
+library(quantmod)
+data("economics", package = "ggplot2")
+
+# Compute % Returns
+economics$returns_perc <- c(0, diff(economics$psavert)/economics$psavert[-length(economics$psavert)])
+
+# Create break points and labels for axis ticks
+brks <- economics$date[seq(1, length(economics$date), 12)]
+lbls <- lubridate::year(economics$date[seq(1, length(economics$date), 12)])
+
+# Plot
+ggplot(economics[1:100, ], aes(date, returns_perc)) + 
+  geom_area() + 
+  scale_x_date(breaks=brks, labels=lbls) + 
+  theme(axis.text.x = element_text(angle=90)) + 
+  labs(title="Area Chart", 
+       subtitle = "Perc Returns for Personal Savings", 
+       y="% Returns for Personal savings", 
+       caption="Source: economics")
+```
+
