@@ -11,13 +11,13 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Adding some new text
 
 Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of us presents a brief, useful computational hack for some useful tool in statistics or graphics.
 
 Here are the links to each weekly hack:
 
-####2 November 2018 (Gotelli)
+#### 2 November 2018 (Gotelli)
+
 [Dirichlet Sampler](NickGotelli/DirichletSampler.html)
 
 [Dirichlet Sampler.R](NickGotelli/DirichletSampler.R)
