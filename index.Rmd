@@ -12,11 +12,13 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Adding some junk at the top
 
 Welcome to the Gotelli lab meeting hack page! At our weekly lab meetings, one of us presents a brief, useful computational hack for some useful tool in statistics or graphics.
 
-Here are the links to each weekly hack:
+Here are the links to earlier hacks:
+
+#### 15 June 2024 (Gotelli)
+[PackageBuilder](NickGotelli/PackageBuildingInstructions.html)
 
 #### 2 November 2018 (Gotelli)
 
