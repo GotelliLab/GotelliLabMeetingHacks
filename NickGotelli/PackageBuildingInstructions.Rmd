@@ -1,0 +1,130 @@
+---
+title: "Building R Packages and R Projects"
+author: "Nick Gotelli"
+date: "15 June 2024"
+output: 
+  html_document: 
+    theme: journal
+    highlight: espresso
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This page describes how to build a package in r for downloading from github, and also how to set up a standard R project as a github repository without using the Rstudio GUI. Instructions for package development are drawn from
+
+
+- https://r-pkgs.org/
+
+- http://rcs.bu.edu/examples/r/tutorials/BuildingPackages/
+
+## Build R Package
+
+```{r,eval=FALSE}
+# set location for building working directory
+setwd("path to where package directory will be built")
+
+# open libraries
+library(devtools)
+library(usethis)
+library(roxygen2)
+library(available)
+
+# check for existing package name
+available::available("proposedPackageName")
+
+# create a new package
+usethis::create_package("repo")
+
+# inside the package project, add a copy left license
+library(devtools)
+usethis::use_agpl3_license()
+
+# check to make sure everything is working
+devtools::check()
+
+# set up with git
+usethis::use_git()
+
+# put it up on github
+library(devtools)
+usethis::use_github()
+```
+Edit The `DESCRIPTION` file
+
+```
+Package: upscaler
+Type: Package
+Title: Tools for Coding Large Projects
+Version: 0.1
+Authors@R: 
+    person(given = "Nicholas",
+           family = "Gotelli",
+           role = c("aut", "cre"),
+           email = "ngotelli@uvm.edu")
+Maintainer: Nicholas Gotelli <ngotelli@uvm.edu>
+Description: Organizing code for large projects is challenging.
+    This package provides functions for building useful sub-folders, creating
+    a time-stamped log file, building separate function files with templates,
+    constructing annotated .csv data files, and more. 
+    Repetitive tasks in large projects can be batch-processed.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/ngotelli/upscaler
+BugReports: https://github.com/ngotelli/upscaler/issues
+RoxygenNote: 7.2.3
+Imports: 
+    log4r,
+    sessioninfo,
+    stringr,
+    utils
+```
+
+```{r, eval=FALSE}
+usethis::use_r("FunctionScript") # creates a named Rscript inside of R folder OR
+# add script file manually to folder
+
+# probably simplest to build functions in a different project and then
+# set them up in the project when they are fully functional
+
+# from code menu select 'Insert Roxygen Skeleton' OR
+# Ctrl + Alt + Shift + R
+
+# make changes to code, and provide documentation for parameters
+
+# 
+
+devtools::load_all() # like "source" but within the package build
+devtools::check() # watch for warnings, errors, notes
+
+usethis::use_vignette("repo") # add an Rmarkdown vignette
+# edit the vignette in the usual way
+devtools::build_vignettes() # creates a subdirectory /doc with the html file
+
+browseVignettes("dplyr") # browse the vignette when using the package
+
+# installing the package from github
+remotes::install_github("username/repo")
+
+# once this is done, package can then be used in scripts
+library("repo")
+
+```
+
+
+## Build R Project
+
+```{r, eval=FALSE}
+
+# point to location and create project
+usethis::create_project("projectName")
+
+# set up git
+usethis::use_git()
+# now modify the gitignore, remove the R folder, and make a commit
+
+# now set it up on github
+usethis:use_github()
+```
